@@ -1,6 +1,6 @@
 import 'package:stopwatch/app/app.dart';
-import 'package:stopwatch/bootstrap.dart';
+import 'package:stopwatch/app/bootstrap.dart';
 
 void main() {
-  bootstrap(() => const App());
+  bootstrap(() => const StopwatchApp());
 }

@@ -1,0 +1,23 @@
+name: core
+description: General widgets and building blocks
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.8.0
+  flutter: ^3.32.0
+
+dependencies:
+  async: ^2.13.0
+  flutter:
+    sdk: flutter
+  go_router: ^16.2.1
+  sliver_tools: ^0.2.12
+  utils:
+    path: ../utils
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.4
+  very_good_analysis: ^9.0.0

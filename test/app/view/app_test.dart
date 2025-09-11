@@ -8,7 +8,7 @@ import 'package:stopwatch/counter/counter.dart';
 void main() {
   group('App', () {
     testWidgets('renders CounterPage', (tester) async {
-      await tester.pumpWidget(App());
+      await tester.pumpWidget(StopwatchApp());
       expect(find.byType(CounterPage), findsOneWidget);
     });
   });

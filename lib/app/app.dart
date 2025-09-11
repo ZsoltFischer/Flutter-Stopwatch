@@ -1,1 +1,1 @@
-export 'view/app.dart';
+export 'stopwatch_app.dart';
