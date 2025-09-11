@@ -1,0 +1,32 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.dart';
+import 'package:utils/utils.dart';
+
+class DigitalClock extends StatelessWidget {
+  const DigitalClock({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 32),
+          child: BlocBuilder<StopwatchBloc, StopwatchState>(
+            builder: (context, state) {
+              return Text(
+                Duration(
+                  milliseconds: state.durationInMilliseconds,
+                ).toDigital(),
+                style: const TextStyle(
+                  fontSize: 48,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}

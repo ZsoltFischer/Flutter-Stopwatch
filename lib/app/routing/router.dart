@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:go_router/go_router.dart';
 import 'package:stopwatch/app/presentation/widgets/scaffold_with_nested_navigation.dart';
-import 'package:stopwatch/app/routing/fakes.dart';
+import 'package:stopwatch/app/routing/fake_route_refresh_stream.dart';
 import 'package:stopwatch/app/routing/routes.dart';
 import 'package:stopwatch/exceptions/view/app_error_widget.dart' show ErrorPage;
 import 'package:stopwatch/features/profile/presentation/dummy_profile_page.dart';
@@ -16,7 +16,7 @@ final _stopwatchNavigatorKey = GlobalKey<NavigatorState>(
 );
 
 final _profileNavigatorKey = GlobalKey<NavigatorState>(
-  debugLabel: 'historyNavigatorKey',
+  debugLabel: 'profileNavigatorKey',
 );
 
 GoRouter buildRouter() {
@@ -29,51 +29,30 @@ GoRouter buildRouter() {
     FakeRouteRefreshStream.connectivityStream,
   ]);
 
-  return GoRouter(
-    initialLocation: AppRoutes.stopwatch.path,
-    navigatorKey: _rootNavigatorKey,
-    debugLogDiagnostics: kDebugMode,
-    refreshListenable: refreshStream,
-    redirect: (context, state) async {
-      // Implement redirections if applicable
-      return null;
-    },
-    routes: [
-      AppGoRoutes.appShell,
-    ],
-    errorPageBuilder: (BuildContext context, GoRouterState state) =>
-        ErrorPage.page(key: state.pageKey),
-  );
-}
-
-class AppGoRoutes {
   /// Page route for Stopwatch.
-  static final home = GoRoute(
+  final stopwatch = GoRoute(
     path: AppRoutes.stopwatch.path,
     pageBuilder: (context, state) => StopwatchPage.page(),
   );
 
-  /// Profile page route. Not part of the main shell
-  static final profile = GoRoute(
+  /// Profile page route.
+  final profile = GoRoute(
     path: AppRoutes.profile.path,
-    pageBuilder: (context, state) => const CupertinoPage(
-      child: DummyProfilePage(),
-    ),
+    pageBuilder: (context, state) => DummyProfilePage.page(),
   );
 
   /// The main shell for the app.
-  static final appShell = StatefulShellRoute.indexedStack(
-    builder: (context, state, navigationShell) {
-      return ScaffoldWithNestedNavigation(
-        key: GlobalKey(),
-        navigationShell: navigationShell,
-      );
-    },
+  final appShell = StatefulShellRoute.indexedStack(
+    pageBuilder: (context, state, navigationShell) =>
+        ScaffoldWithNestedNavigation.page(
+          key: GlobalKey(),
+          navigationShell: navigationShell,
+        ),
     branches: [
       StatefulShellBranch(
         navigatorKey: _stopwatchNavigatorKey,
         routes: [
-          home,
+          stopwatch,
         ],
       ),
       StatefulShellBranch(
@@ -83,5 +62,19 @@ class AppGoRoutes {
         ],
       ),
     ],
+  );
+
+  return GoRouter(
+    initialLocation: AppRoutes.stopwatch.path,
+    navigatorKey: _rootNavigatorKey,
+    debugLogDiagnostics: kDebugMode,
+    refreshListenable: refreshStream,
+    redirect: (context, state) async {
+      // Implement redirections if applicable
+      return null;
+    },
+    routes: [appShell],
+    errorPageBuilder: (BuildContext context, GoRouterState state) =>
+        ErrorPage.page(key: state.pageKey),
   );
 }

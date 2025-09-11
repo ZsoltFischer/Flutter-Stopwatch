@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:stopwatch/app/presentation/widgets.dart';
 
 class DummyProfilePage extends StatelessWidget {
   const DummyProfilePage({super.key});
@@ -10,21 +11,19 @@ class DummyProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text('Profile'),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 16,
-          children: [
-            Text('Dummy Profile Page'),
-            Text(
-              'This page was only to have an extra route for NavigationBar / NavigationRail demo.',
+      backgroundColor: CupertinoColors.systemGroupedBackground,
+      child: CustomScrollView(
+        slivers: [
+          MobilePageNavbar(title: 'Profile'),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+              child: Text(
+                'This page was only created to have an extra route for NavigationBar / NavigationRail demo.',
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

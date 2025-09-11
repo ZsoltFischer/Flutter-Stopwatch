@@ -1,7 +1,6 @@
-// stopwatch_bloc.dart
-
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stopwatch/features/stopwatch/data/services/stopwatch_service.dart';
 import 'package:stopwatch/features/stopwatch/domain/usecases/usecases.dart';
 
@@ -19,10 +18,10 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
        _pauseStopwatch = pauseStopwatchUsecase,
        _stopStopwatch = stopStopwatchUsecase,
        super(StopwatchInitial()) {
-    on<_StopwatchTick>(_onStopwatchTick);
-    on<_StopwatchStart>(_onStopwatchStart);
-    on<_StopwatchPause>(_onStopwatchPause);
-    on<_StopwatchStop>(_onStopwatchStopped);
+    on<_StopwatchTick>(_onStopwatchTick, transformer: sequential());
+    on<_StopwatchStart>(_onStopwatchStart, transformer: sequential());
+    on<_StopwatchPause>(_onStopwatchPause, transformer: sequential());
+    on<_StopwatchStop>(_onStopwatchStopped, transformer: sequential());
   }
 
   /// The stopwatch service that manages the timer logic.
@@ -46,9 +45,10 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
     _durationSubscription?.cancel();
 
     // 2. Subscribe to the service's duration stream and add ticks to the BLoC.
-    _durationSubscription = _stopwatchService.durationStream.listen((duration) {
-      add(_StopwatchTick(durationInMilliseconds: duration));
-    });
+    _durationSubscription = _stopwatchService.durationStream.listen(
+      _tick,
+      onDone: stop,
+    );
   }
 
   /// Starts the stopwatch.
@@ -64,6 +64,10 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
   /// Resets the stopwatch.
   void stop() {
     add(_StopwatchStop());
+  }
+
+  void _tick(int duration) {
+    add(_StopwatchTick(durationInMilliseconds: duration));
   }
 
   /// Handle the start event by starting the service.
