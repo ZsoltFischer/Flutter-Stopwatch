@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:stopwatch/app/presentation/widgets.dart';
 import 'package:stopwatch/features/stopwatch/presentation/widgets/widgets.dart';
 
 class StopwatchPage extends StatelessWidget {
@@ -17,6 +18,7 @@ class StopwatchPage extends StatelessWidget {
           MobilePageNavbar(title: 'Stopwatch'),
           DigitalClock(),
           StopwatchControls(),
+          LapList(),
         ],
       ),
     );

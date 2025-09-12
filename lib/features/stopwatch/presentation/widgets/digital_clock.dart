@@ -13,10 +13,12 @@ class DigitalClock extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 32),
           child: BlocBuilder<StopwatchBloc, StopwatchState>(
+            buildWhen: (previous, current) =>
+                previous.elapsedTimeInMs != current.elapsedTimeInMs,
             builder: (context, state) {
               return Text(
                 Duration(
-                  milliseconds: state.durationInMilliseconds,
+                  milliseconds: state.elapsedTimeInMs,
                 ).toDigital(),
                 style: const TextStyle(
                   fontSize: 48,

@@ -2,32 +2,46 @@ import 'package:stopwatch/features/stopwatch/domain/entity/lap_entity.dart';
 
 class LapModel {
   LapModel({
-    required Duration duration,
-    required int number,
-  }) : _duration = duration,
-       _number = number;
+    required int lapTime,
+    required int index,
+  }) : _duration = lapTime,
+       _number = index;
 
-  factory LapModel.fromJson(Map<String, dynamic> json) {
+  /// Creates a [LapModel] from a [LapEntity].
+  factory LapModel.fromEntity(LapEntity entity) {
     return LapModel(
-      duration: Duration(microseconds: json['duration'] as int),
-      number: json['number'] as int,
+      lapTime: entity.lapTime,
+      index: entity.index,
     );
   }
 
-  final Duration _duration;
+  /// Creates a [LapModel] from a JSON map.
+  factory LapModel.fromJson(Map<String, dynamic> json) {
+    return LapModel(
+      lapTime: json['lapTime'] as int,
+      index: json['index'] as int,
+    );
+  }
+
+  /// The duration of the lap.
+  final int _duration;
+
+  /// The lap number.
   final int _number;
 
+  /// Converts the [LapModel] to a JSON map.
   Map<String, dynamic> toJson() {
     return {
-      'duration': _duration.inMilliseconds,
-      'number': _number,
+      'lapTime': _duration,
+      'index': _number,
     };
   }
 
+  /// Converts the [LapModel] to a [LapEntity].
   LapEntity toEntity() {
     return LapEntity(
-      duration: _duration,
-      number: _number,
+      lapTime: _duration,
+      index: _number,
     );
   }
 }

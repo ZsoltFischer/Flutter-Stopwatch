@@ -2,13 +2,13 @@ import 'package:equatable/equatable.dart';
 
 class LapEntity extends Equatable {
   const LapEntity({
-    required this.duration,
-    required this.number,
+    required this.lapTime,
+    required this.index,
   });
 
-  final Duration duration;
-  final int number;
+  final int lapTime;
+  final int index;
 
   @override
-  List<Object?> get props => [duration, number];
+  List<Object?> get props => [lapTime, index];
 }

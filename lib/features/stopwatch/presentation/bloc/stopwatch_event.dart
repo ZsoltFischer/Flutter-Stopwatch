@@ -11,6 +11,10 @@ class _StopwatchPause extends StopwatchEvent {}
 class _StopwatchStop extends StopwatchEvent {}
 
 class _StopwatchTick extends StopwatchEvent {
-  _StopwatchTick({required this.durationInMilliseconds});
-  final int durationInMilliseconds;
+  _StopwatchTick({required this.stopwatchStateEntity});
+  final StopwatchStateEntity stopwatchStateEntity;
+}
+
+class _StopwatchRecordLap extends StopwatchEvent {
+  _StopwatchRecordLap();
 }
