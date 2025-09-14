@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:stopwatch/features/stopwatch/domain/entity/stopwatch_state_entity.dart';
+import 'package:equatable/equatable.dart';
+import 'package:stopwatch/features/stopwatch/domain/entities/stopwatch_state_entity.dart';
 import 'package:stopwatch/features/stopwatch/domain/services/stopwatch_service.dart';
 import 'package:stopwatch/features/stopwatch/domain/usecases/usecases.dart';
-import 'package:stopwatch/features/stopwatch/presentation/model/lap_viewmodel.dart';
+import 'package:stopwatch/features/stopwatch/presentation/models/lap_viewmodel.dart';
 
 part 'stopwatch_event.dart';
 part 'stopwatch_state.dart';
@@ -29,12 +30,12 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
        _pauseStopwatch = pauseStopwatchUsecase,
        _stopStopwatch = stopStopwatchUsecase,
        _recordLapUsecase = recordLapUsecase,
-       super(StopwatchInitial()) {
-    on<_StopwatchTick>(_onStopwatchTick, transformer: sequential());
-    on<_StopwatchStart>(_onStopwatchStart, transformer: sequential());
-    on<_StopwatchPause>(_onStopwatchPause, transformer: sequential());
-    on<_StopwatchStop>(_onStopwatchStopped, transformer: sequential());
-    on<_StopwatchRecordLap>(_onStopwatchRecordLap, transformer: sequential());
+       super(const StopwatchInitial()) {
+    on<StopwatchTick>(_onStopwatchTick, transformer: sequential());
+    on<StopwatchStart>(_onStopwatchStart, transformer: sequential());
+    on<StopwatchPause>(_onStopwatchPause, transformer: sequential());
+    on<StopwatchStop>(_onStopwatchStopped, transformer: sequential());
+    on<StopwatchRecordLap>(_onStopwatchRecordLap, transformer: sequential());
   }
 
   /// ===============================================================
@@ -81,35 +82,35 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
 
   /// Starts the stopwatch.
   void start() {
-    add(_StopwatchStart());
+    add(StopwatchStart());
   }
 
   /// Pauses the stopwatch.
   void pause() {
-    add(_StopwatchPause());
+    add(StopwatchPause());
   }
 
   /// Resets the stopwatch.
   void stop() {
-    add(_StopwatchStop());
+    add(StopwatchStop());
   }
 
   /// Records a lap.
   void recordLap() {
-    add(_StopwatchRecordLap());
-  }
-
-  void _onTick(StopwatchStateEntity stopwatchState) {
-    add(_StopwatchTick(stopwatchStateEntity: stopwatchState));
+    add(StopwatchRecordLap());
   }
 
   /// ===============================================================
   /// * Event Handlers
   /// ===============================================================
 
+  void _onTick(StopwatchStateEntity stopwatchState) {
+    add(StopwatchTick(stopwatchStateEntity: stopwatchState));
+  }
+
   /// Handle the start event by starting the service.
   void _onStopwatchStart(
-    _StopwatchStart event,
+    StopwatchStart event,
     Emitter<StopwatchState> emit,
   ) {
     if (state is StopwatchRunning) {
@@ -134,7 +135,7 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
 
   /// Handle the pause event by pausing the service and emitting a paused state.
   void _onStopwatchPause(
-    _StopwatchPause event,
+    StopwatchPause event,
     Emitter<StopwatchState> emit,
   ) {
     if (state is! StopwatchRunning) {
@@ -158,7 +159,7 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
   /// Handle the reset event by resetting the service
   /// and emitting the initial state.
   void _onStopwatchStopped(
-    _StopwatchStop event,
+    StopwatchStop event,
     Emitter<StopwatchState> emit,
   ) {
     if (state is! StopwatchRunning && state is! StopwatchPaused) {
@@ -171,16 +172,16 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
     _stopStopwatch();
 
     // 3. emit the initial state
-    emit(StopwatchInitial());
+    emit(const StopwatchInitial());
   }
 
   /// Handle the lap event by recording a lap.
   void _onStopwatchRecordLap(
-    _StopwatchRecordLap event,
+    StopwatchRecordLap event,
     Emitter<StopwatchState> emit,
   ) {
-    /// Only record a lap if the stopwatch is running.
-    if (state is StopwatchRunning) {
+    /// Only record a lap if the stopwatch is running and has elapsed time.
+    if (state is StopwatchRunning && state.elapsedTimeInMs > 0) {
       /// Record the lap using the usecase.
       _recordLapUsecase();
     }
@@ -188,7 +189,7 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
 
   /// Handle the tick event by updating the state with the new duration.
   void _onStopwatchTick(
-    _StopwatchTick event,
+    StopwatchTick event,
     Emitter<StopwatchState> emit,
   ) {
     // 1. If the stopwatch is complete, stop the service and return.
@@ -198,7 +199,7 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
       return;
     }
 
-    // 3. Emit the appropriate state based on the current state.
+    // 2. Emit the appropriate state based on the current state.
     if (state is StopwatchRunning) {
       emit(
         (state as StopwatchRunning).copyWith(

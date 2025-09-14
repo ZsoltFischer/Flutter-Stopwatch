@@ -17,6 +17,7 @@ class DigitalClock extends StatelessWidget {
                 previous.elapsedTimeInMs != current.elapsedTimeInMs,
             builder: (context, state) {
               return Text(
+                key: const ValueKey('DigitalClockText'),
                 Duration(
                   milliseconds: state.elapsedTimeInMs,
                 ).toDigital(),

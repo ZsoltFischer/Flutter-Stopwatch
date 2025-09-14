@@ -4,31 +4,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(body: Center(child: MovingClock())),
-    );
-  }
-}
-
 // The main StatefulWidget that manages the clock's state and animation.
-class MovingClock extends StatefulWidget {
-  const MovingClock({Key? key}) : super(key: key);
+class RenderClock extends StatefulWidget {
+  const RenderClock({super.key});
 
   @override
-  _MovingClockState createState() => _MovingClockState();
+  State<RenderClock> createState() => _RenderClockState();
 }
 
-class _MovingClockState extends State<MovingClock> {
+class _RenderClockState extends State<RenderClock> {
   late Timer _timer;
   late DateTime _currentTime;
 
@@ -59,11 +43,11 @@ class _MovingClockState extends State<MovingClock> {
       time: _currentTime,
       children: const [
         // The hour hand is the shortest and thickest.
-        ClockHand(lengthFactor: 0.5, thickness: 10.0, color: Colors.black87),
+        ClockHand(lengthFactor: 0.5, thickness: 10, color: Colors.black87),
         // The minute hand is longer and thinner than the hour hand.
-        ClockHand(lengthFactor: 0.7, thickness: 6.0, color: Colors.black87),
+        ClockHand(lengthFactor: 0.7, thickness: 6, color: Colors.black87),
         // The second hand is the longest, thinnest, and a different color.
-        ClockHand(lengthFactor: 0.9, thickness: 2.0, color: Colors.red),
+        ClockHand(lengthFactor: 0.9, thickness: 2, color: Colors.red),
       ],
     );
   }
@@ -72,13 +56,12 @@ class _MovingClockState extends State<MovingClock> {
 // A MultiChildRenderObjectWidget that creates the main RenderClockFace.
 // This is the bridge between the declarative Widget tree and the imperative RenderObject tree.
 class CustomClockRender extends MultiChildRenderObjectWidget {
-  final DateTime time;
-
   const CustomClockRender({
-    Key? key,
     required this.time,
-    required List<Widget> children,
-  }) : super(key: key, children: children);
+    required super.children,
+    super.key,
+  });
+  final DateTime time;
 
   // Creates the main RenderObject for the clock face.
   @override
@@ -96,16 +79,15 @@ class CustomClockRender extends MultiChildRenderObjectWidget {
 // A simple LeafRenderObjectWidget for each clock hand.
 // This widget creates the RenderClockHand object.
 class ClockHand extends LeafRenderObjectWidget {
-  final double lengthFactor;
-  final double thickness;
-  final Color color;
-
   const ClockHand({
-    Key? key,
     required this.lengthFactor,
     required this.thickness,
     required this.color,
-  }) : super(key: key);
+    super.key,
+  });
+  final double lengthFactor;
+  final double thickness;
+  final Color color;
 
   // Creates the RenderObject for a single clock hand.
   @override
@@ -203,7 +185,7 @@ class RenderClockHand extends RenderBox {
 
     // Draw the hand as a line from the center outward.
     canvas
-      ..drawLine(Offset.zero, Offset(0.0, -handLength), handPaint)
+      ..drawLine(Offset.zero, Offset(0, -handLength), handPaint)
       // Restore the canvas state.
       ..restore();
   }
@@ -250,19 +232,19 @@ class RenderClockFace extends RenderBox
   void performLayout() {
     // Calculate the angles for the hands based on the current time.
     // We use a mix of seconds and milliseconds for smoother second hand movement.
-    final double second = time.second + time.millisecond / 1000.0;
-    final double minute = time.minute + second / 60.0;
-    final double hour = time.hour + minute / 60.0;
+    final second = time.second + time.millisecond / 1000.0;
+    final minute = time.minute + second / 60.0;
+    final hour = time.hour + minute / 60.0;
 
     final secondAngle = second * 2 * pi / 60;
     final minuteAngle = minute * 2 * pi / 60;
     final hourAngle = hour * 2 * pi / 12;
 
     // The clock hands are the children of this render object.
-    RenderBox? child = firstChild;
+    var child = firstChild;
     while (child != null) {
       // Get the parent data for the child.
-      final parentData = child.parentData as ClockHandParentData;
+      final parentData = child.parentData! as ClockHandParentData;
 
       // Assign the correct angle to each hand based on its index.
       if (child == firstChild) {
@@ -307,7 +289,7 @@ class RenderClockFace extends RenderBox
     final centerDotPaint = Paint()
       ..color = Colors.black
       ..style = PaintingStyle.fill;
-    canvas.drawCircle(center, 10.0, centerDotPaint);
+    canvas.drawCircle(center, 10, centerDotPaint);
 
     // Draw the ticks.
     final tickPaint = Paint()
@@ -320,7 +302,7 @@ class RenderClockFace extends RenderBox
       ..strokeWidth = 5.0
       ..strokeCap = StrokeCap.round;
 
-    for (int i = 0; i < 60; i++) {
+    for (var i = 0; i < 60; i++) {
       final angle = i * 2 * pi / 60;
       final isHourTick = i % 5 == 0;
       final length = isHourTick ? shortestSide * 0.05 : shortestSide * 0.025;
@@ -342,7 +324,7 @@ class RenderClockFace extends RenderBox
     }
 
     // The hands are children of this render object, so we paint them next.
-    RenderBox? child = firstChild;
+    var child = firstChild;
     while (child != null) {
       // Paint each child (the hands). The child's own paint method handles its drawing.
       // The child's position is relative to its parent's origin, which is at `offset`.
@@ -354,5 +336,5 @@ class RenderClockFace extends RenderBox
 
 // A custom ParentData class to store the rotation angle for each hand.
 class ClockHandParentData extends ContainerBoxParentData<RenderBox> {
-  double angle = 0.0;
+  double angle = 0;
 }

@@ -7,7 +7,7 @@
 /// strings in the repo that
 ///
 /// * Important: This extension should only be used temporarily
-/// * because it disables constant instances of [String]s.
+/// * because it prevents creating constant instances of [String]s.
 /// * All widgets that use it can not be declared as `const`.
 /// * Remove all usages of this extension before releasing the app!
 extension HardCodedStrings on String {

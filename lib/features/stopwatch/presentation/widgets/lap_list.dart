@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart' show listEquals;
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.dart';
-import 'package:utils/utils.dart';
+import 'package:stopwatch/features/stopwatch/presentation/widgets/lap_list_tile.dart';
 
 /// A widget that displays a list of recorded laps in the stopwatch application.
 class LapList extends StatelessWidget {
@@ -17,23 +17,19 @@ class LapList extends StatelessWidget {
       builder: (context, state) {
         final laps = state.laps.reversed.toList();
 
-        return SliverList.builder(
-          itemCount: laps.length,
-          itemBuilder: (context, index) {
-            final lap = laps[index];
-            final lapDuration = Duration(milliseconds: lap.lapTime);
-
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Lap ${lap.index}'),
-                  Text(lapDuration.toDigital()),
-                ],
-              ),
-            );
-          },
+        return SliverPadding(
+          padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
+          sliver: SliverList.separated(
+            separatorBuilder: (context, index) => const Divider(),
+            itemCount: laps.length,
+            itemBuilder: (context, index) {
+              final lap = laps[index];
+              return LapListTile(
+                key: ValueKey(lap.toString()),
+                lap: lap,
+              );
+            },
+          ),
         );
       },
     );

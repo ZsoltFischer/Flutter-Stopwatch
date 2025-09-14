@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:stopwatch/features/stopwatch/domain/entity/lap_entity.dart';
+import 'package:stopwatch/features/stopwatch/domain/entities/lap_entity.dart';
 
 /// Represents the state of the stopwatch.
 class StopwatchStateEntity extends Equatable {

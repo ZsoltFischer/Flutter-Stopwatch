@@ -1,8 +1,9 @@
 // stopwatch_service.dart
 
 import 'dart:async';
+import 'dart:math';
 
-import 'package:stopwatch/features/stopwatch/domain/entity/entities.dart';
+import 'package:stopwatch/features/stopwatch/domain/entities/entities.dart';
 
 /// This class is a dedicated service for managing the stopwatch timer.
 /// It handles starting, pausing, stopping, and recording laps
@@ -12,8 +13,11 @@ import 'package:stopwatch/features/stopwatch/domain/entity/entities.dart';
 class StopwatchService {
   /// Creates a [StopwatchService] with an optional tick limit (default is 99 hours).
   StopwatchService({
+    double tickFrequencyHz = 60,
     Duration tickLimit = const Duration(hours: 99),
   }) {
+    /// Prevent division by zero and ensure a positive tick frequency.
+    _tickPeriodInMs = 1000 ~/ (max(double.minPositive, tickFrequencyHz.abs()));
     _tickLimitInMs = tickLimit.inMilliseconds;
     _durationController = _createController();
   }
@@ -46,6 +50,9 @@ class StopwatchService {
   /// The elapsed time of the previous lap.
   int _lastLapTimeInMs = 0;
 
+  /// The timestamp when the stopwatch was started in milliseconds.
+  // int? _startTimeInMs;
+
   /// Stream that emits the current state of the stopwatch.
   Stream<StopwatchStateEntity> get durationStream => _durationController.stream;
 
@@ -54,6 +61,12 @@ class StopwatchService {
 
   /// Unmodifiable list of the recorded laps.
   List<LapEntity> get laps => List.unmodifiable(_laps);
+
+  /// Frequency of timer ticks in Hz.
+  late final int _tickPeriodInMs;
+
+  /// Exposes the tick frequency in Hz for testing and inspection.
+  int get tickFrequencyHz => _tickPeriodInMs;
 
   /// Factory for a reusable StreamController
   StreamController<StopwatchStateEntity> _createController() {
@@ -74,10 +87,12 @@ class StopwatchService {
       _durationController = _createController();
     }
 
-    // 3. Start the periodic timer to update the stopwatch every 10 milliseconds
+    // 3. Start the periodic timer to update the stopwatch
     _lastTickInMs = DateTime.now().millisecondsSinceEpoch;
+
+    // _lastTickInMs = _startTimeInMs;
     _timerSubscription = Stream.periodic(
-      const Duration(milliseconds: 10),
+      Duration(milliseconds: _tickPeriodInMs),
       (ticks) => ticks,
     ).listen(_tick);
   }
@@ -164,8 +179,8 @@ class StopwatchService {
   /// ===============================================================
 
   // Disposes of the StreamController and subscription.
-  void dispose() {
-    _timerSubscription?.cancel();
-    _durationController.close();
+  Future<void> dispose() async {
+    await _timerSubscription?.cancel();
+    await _durationController.close();
   }
 }

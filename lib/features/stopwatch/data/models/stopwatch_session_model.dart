@@ -1,9 +1,17 @@
-import 'package:stopwatch/features/stopwatch/data/model/lap_model.dart';
-import 'package:stopwatch/features/stopwatch/domain/entity/stopwatch_session_entity.dart';
+import 'package:stopwatch/features/stopwatch/data/models/lap_model.dart';
+import 'package:stopwatch/features/stopwatch/domain/entities/stopwatch_session_entity.dart';
 
-/// Data model representing a stopwatch session, including its laps.
+const _id = 'id';
+const _startTime = 'startTime';
+const _laps = 'laps';
+
+/// Data model representing a stopwatch session
+///
+/// This model is used to cache a session in local storage.
+/// Sessions can be restored and continued from the cache
+/// if the app was in the background or terminated.
 class StopwatchSessionModel {
-  /// Constructor for StopwatchSessionModel.
+  /// Creates a new instance of [StopwatchSessionModel].
   StopwatchSessionModel({
     required this.id,
     required this.startTime,
@@ -11,6 +19,8 @@ class StopwatchSessionModel {
   });
 
   /// Creates a StopwatchSessionModel from a StopwatchSessionEntity.
+  ///
+  /// Call it when you need to convert an entity to a model for storage.
   factory StopwatchSessionModel.fromEntity(StopwatchSessionEntity entity) {
     return StopwatchSessionModel(
       id: entity.id,
@@ -20,11 +30,13 @@ class StopwatchSessionModel {
   }
 
   /// Creates a StopwatchSessionModel from a JSON map.
+  ///
+  /// Call it when you need to restore a session from local storage.
   factory StopwatchSessionModel.fromJson(Map<String, dynamic> json) {
     return StopwatchSessionModel(
-      id: json['id'] as String,
-      startTime: DateTime.parse(json['startTime'] as String),
-      laps: (json['laps'] as List<dynamic>)
+      id: json[_id] as String,
+      startTime: DateTime.parse(json[_startTime] as String),
+      laps: (json[_laps] as List<dynamic>)
           .map((lapJson) => LapModel.fromJson(lapJson as Map<String, dynamic>))
           .toList(),
     );
@@ -51,9 +63,9 @@ class StopwatchSessionModel {
   /// Converts the StopwatchSessionModel to a JSON map.
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'startTime': startTime.toIso8601String(),
-      'laps': laps.map((lap) => lap.toJson()).toList(),
+      _id: id,
+      _startTime: startTime.toIso8601String(),
+      _laps: laps.map((lap) => lap.toJson()).toList(),
     };
   }
 }

@@ -4,17 +4,17 @@ part of 'stopwatch_bloc.dart';
 // The sealed class ensures that we handle all possible events.
 sealed class StopwatchEvent {}
 
-class _StopwatchStart extends StopwatchEvent {}
+class StopwatchStart extends StopwatchEvent {}
 
-class _StopwatchPause extends StopwatchEvent {}
+class StopwatchPause extends StopwatchEvent {}
 
-class _StopwatchStop extends StopwatchEvent {}
+class StopwatchStop extends StopwatchEvent {}
 
-class _StopwatchTick extends StopwatchEvent {
-  _StopwatchTick({required this.stopwatchStateEntity});
+class StopwatchTick extends StopwatchEvent {
+  StopwatchTick({required this.stopwatchStateEntity});
   final StopwatchStateEntity stopwatchStateEntity;
 }
 
-class _StopwatchRecordLap extends StopwatchEvent {
-  _StopwatchRecordLap();
+class StopwatchRecordLap extends StopwatchEvent {
+  StopwatchRecordLap();
 }

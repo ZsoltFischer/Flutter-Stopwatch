@@ -2,9 +2,9 @@ part of 'stopwatch_bloc.dart';
 
 // States represent the current condition of the stopwatch.
 // The sealed class guarantees type safety and that all states are handled.
-sealed class StopwatchState {
+sealed class StopwatchState extends Equatable {
   /// Base constructor for all stopwatch states.
-  StopwatchState({
+  const StopwatchState({
     required this.elapsedTimeInMs,
     this.laps = const [],
   });
@@ -18,6 +18,9 @@ sealed class StopwatchState {
   final List<LapViewModel> laps;
 
   @override
+  List<Object?> get props => [elapsedTimeInMs, laps];
+
+  @override
   String toString() =>
       'StopwatchState(durationInMilliseconds: $elapsedTimeInMs, laps: ${laps.length})';
 }
@@ -25,7 +28,7 @@ sealed class StopwatchState {
 /// Initial state when the stopwatch is reset or hasn't started yet.
 class StopwatchInitial extends StopwatchState {
   /// Creates an initial state with an optional duration (default is 0).
-  StopwatchInitial({
+  const StopwatchInitial({
     super.elapsedTimeInMs = 0,
     super.laps,
   });
@@ -49,7 +52,7 @@ class StopwatchInitial extends StopwatchState {
 /// State when the stopwatch is actively running.
 class StopwatchRunning extends StopwatchState {
   /// Creates a running state with the current duration and start time.
-  StopwatchRunning({
+  const StopwatchRunning({
     required this.startTime,
     required super.elapsedTimeInMs,
     super.laps,
@@ -72,6 +75,9 @@ class StopwatchRunning extends StopwatchState {
   final DateTime startTime;
 
   @override
+  List<Object?> get props => super.props..addAll([startTime]);
+
+  @override
   String toString() =>
       'StopwatchRunning(durationInMilliseconds: $elapsedTimeInMs, startTime: $startTime, laps: ${laps.length})';
 }
@@ -79,7 +85,7 @@ class StopwatchRunning extends StopwatchState {
 /// State when the stopwatch is paused.
 class StopwatchPaused extends StopwatchState {
   /// Creates a paused state with the current duration.
-  StopwatchPaused({
+  const StopwatchPaused({
     required super.elapsedTimeInMs,
     super.laps,
   });

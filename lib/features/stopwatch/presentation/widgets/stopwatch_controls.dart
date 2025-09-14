@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.dart';
+import 'package:utils/utils.dart';
 
 /// A widget that displays the stopwatch controls (Start, Pause, Resume, Stop, Lap).
 /// The available controls change based on the current state of the stopwatch.
@@ -11,6 +12,7 @@ import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.da
 /// - Running: [Pause, Stop, Lap]
 /// - Paused: [Resume, Stop]
 class StopwatchControls extends StatelessWidget {
+  /// Creates a [StopwatchControls] widget.
   const StopwatchControls({super.key});
 
   @override
@@ -21,47 +23,92 @@ class StopwatchControls extends StatelessWidget {
       builder: (context, state) {
         final buttons = switch (state) {
           StopwatchInitial() => [
-            CupertinoButton.filled(
-              onPressed: context.read<StopwatchBloc>().start,
-              child: const Text('Start'),
-            ),
+            const _StartButton(),
           ],
           StopwatchRunning() => [
-            CupertinoButton.filled(
-              onPressed: context.read<StopwatchBloc>().pause,
-              child: const Text('Pause'),
-            ),
-            const SizedBox(width: 16),
-            CupertinoButton.filled(
-              onPressed: context.read<StopwatchBloc>().stop,
-              child: const Text('Stop'),
-            ),
-            const SizedBox(width: 16),
-            CupertinoButton.filled(
-              onPressed: context.read<StopwatchBloc>().recordLap,
-              child: const Text('Lap'),
-            ),
+            const _PauseButton(),
+            const _StopButton(),
+            const _LapButton(),
           ],
           StopwatchPaused() => [
-            CupertinoButton.filled(
-              onPressed: context.read<StopwatchBloc>().start,
-              child: const Text('Resume'),
-            ),
-            const SizedBox(width: 16),
-            CupertinoButton.filled(
-              onPressed: context.read<StopwatchBloc>().stop,
-              child: const Text('Stop'),
-            ),
+            const _ResumeButton(),
+            const _StopButton(),
           ],
         };
 
         return SliverToBoxAdapter(
           child: Row(
+            spacing: 16,
             mainAxisAlignment: MainAxisAlignment.center,
             children: buttons,
           ),
         );
       },
+    );
+  }
+}
+
+class _StartButton extends StatelessWidget {
+  const _StartButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton.filled(
+      key: const ValueKey('StartButton'),
+      onPressed: context.read<StopwatchBloc>().start,
+      child: Text('Start'.hardcoded),
+    );
+  }
+}
+
+class _PauseButton extends StatelessWidget {
+  const _PauseButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton.filled(
+      key: const ValueKey('PauseButton'),
+      onPressed: context.read<StopwatchBloc>().pause,
+      child: Text('Pause'.hardcoded),
+    );
+  }
+}
+
+class _ResumeButton extends StatelessWidget {
+  const _ResumeButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton.filled(
+      key: const ValueKey('ResumeButton'),
+      onPressed: context.read<StopwatchBloc>().start,
+      child: Text('Resume'.hardcoded),
+    );
+  }
+}
+
+class _StopButton extends StatelessWidget {
+  const _StopButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton.filled(
+      key: const ValueKey('StopButton'),
+      onPressed: context.read<StopwatchBloc>().stop,
+      child: Text('Stop'.hardcoded),
+    );
+  }
+}
+
+class _LapButton extends StatelessWidget {
+  const _LapButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton.filled(
+      key: const ValueKey('LapButton'),
+      onPressed: context.read<StopwatchBloc>().recordLap,
+      child: Text('Lap'.hardcoded),
     );
   }
 }

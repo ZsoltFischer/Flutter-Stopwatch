@@ -1,5 +1,5 @@
 import 'package:stopwatch/exceptions/exceptions.dart';
-import 'package:stopwatch/features/stopwatch/domain/entity/stopwatch_session_entity.dart';
+import 'package:stopwatch/features/stopwatch/domain/entities/stopwatch_session_entity.dart';
 import 'package:utils/utils.dart' show Result;
 
 abstract class StopwatchRepository {
