@@ -20,7 +20,10 @@ class DummyProfilePage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
               child: Text(
-                'This page was only created to have an extra route for demonstrating responsivity and navigation.'
+                '''
+                This page was only created to have an extra route
+                for demonstrating responsivity and navigation.
+                '''
                     .hardcoded,
               ),
             ),

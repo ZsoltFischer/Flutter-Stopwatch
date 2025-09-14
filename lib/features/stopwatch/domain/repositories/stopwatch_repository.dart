@@ -1,4 +1,4 @@
-import 'package:stopwatch/exceptions/exceptions.dart';
+import 'package:stopwatch/exceptions/app_exceptions.dart';
 import 'package:stopwatch/features/stopwatch/domain/entities/stopwatch_session_entity.dart';
 import 'package:utils/utils.dart' show Result;
 

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:stopwatch/exceptions/model/app_exceptions.dart';
+import 'package:stopwatch/exceptions/app_exceptions.dart';
 import 'package:stopwatch/features/stopwatch/data/models/stopwatch_session_model.dart';
 import 'package:utils/utils.dart';
 
