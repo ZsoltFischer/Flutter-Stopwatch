@@ -18,12 +18,12 @@ class DigitalClock extends StatelessWidget {
             builder: (context, state) {
               return Text(
                 key: const ValueKey('DigitalClockText'),
-                Duration(
-                  milliseconds: state.elapsedTimeInMs,
-                ).toDigital(),
+                Duration(milliseconds: state.elapsedTimeInMs).toDigital(),
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'RobotoMono',
                 ),
               );
             },

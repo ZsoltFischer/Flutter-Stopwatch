@@ -48,6 +48,7 @@ class StopwatchRepositoryImpl implements StopwatchRepository {
   Future<Result<StopwatchSessionEntity, AppException>> loadSession(
     String sessionId,
   ) {
+    //!TODO: Implement loadSession method for persistent storage.
     throw UnimplementedError();
   }
 
@@ -56,6 +57,7 @@ class StopwatchRepositoryImpl implements StopwatchRepository {
   Future<Result<void, AppException>> saveSession(
     StopwatchSessionEntity session,
   ) {
+    //!TODO: Implement saveSession method for persistent storage.
     throw UnimplementedError();
   }
 }

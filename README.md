@@ -23,9 +23,8 @@ The project template was generated with the *very_good_cli* (v0.27.0) and was de
     - Custom robots and fakes for UI and business logic coverage
 - **Platform Support**: Android, iOS, Web, macOS, Windows
 
-The `packages/` directory contains shared Flutter packages for modularity and code reuse. Each package is intended to be reused across multiple apps inside an organisation - either in a *monorepo* setup like in this project - or *published separately* for easy dependency handling. 
+The `packages/` directory contains shared Flutter package(s) for modularity and code reuse. Each package is intended to be reused across multiple apps inside an organisation - either in a *monorepo* setup like in this project - or *published separately* for easy dependency handling. 
 
-- **core/**: Shared core logic, widgets etc. It is supposed to contain all logic, themes and reusable atomic components that implement the organisation's UI style guidelines
 - **utils/**: Common utilities, constants, extensions, and error handling used across multiple apps and features.
 
 ## Project Structure
@@ -54,7 +53,6 @@ test/                 # Unit and widget tests
 
 
 packages/
-    core/               # Shared core logic, widgetsm, etc. 
     utils/              # Common utilities, extensions, error handling. 
 ```
 

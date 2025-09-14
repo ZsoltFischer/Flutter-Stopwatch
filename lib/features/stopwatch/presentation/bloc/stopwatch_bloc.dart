@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stopwatch/features/stopwatch/domain/entities/stopwatch_state_entity.dart';
 import 'package:stopwatch/features/stopwatch/domain/services/stopwatch_service.dart';
 import 'package:stopwatch/features/stopwatch/domain/usecases/usecases.dart';
 import 'package:stopwatch/features/stopwatch/presentation/models/lap_viewmodel.dart';
+import 'package:stopwatch/features/stopwatch/presentation/utils/event_transformers.dart';
 
 part 'stopwatch_event.dart';
 part 'stopwatch_state.dart';

@@ -10,12 +10,12 @@ class LapLocalDataSource {
   FutureOr<Result<void, AppException>> saveSession(
     StopwatchSessionModel session,
   ) async {
-    // Implementation to save lap locally
+    //!TODO: Implementation to save lap locally
     return const Success(null);
   }
 
   FutureOr<Result<StopwatchSessionModel, AppException>?> getSession() async {
-    // Implementation to retrieve laps from local storage
+    //!TODO: Implementation to retrieve laps from local storage
     return null;
   }
 }

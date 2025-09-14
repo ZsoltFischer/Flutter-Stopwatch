@@ -1,13 +1,13 @@
-import 'package:core/core.dart' show GoRouterRefreshStream;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:go_router/go_router.dart';
 import 'package:stopwatch/app/presentation/widgets/scaffold_with_nested_navigation.dart';
 import 'package:stopwatch/app/routing/fake_route_refresh_stream.dart';
 import 'package:stopwatch/app/routing/routes.dart';
-import 'package:stopwatch/exceptions/view/app_error_widget.dart' show ErrorPage;
+import 'package:stopwatch/exceptions/view/app_error_widget.dart';
 import 'package:stopwatch/features/profile/presentation/dummy_profile_page.dart';
 import 'package:stopwatch/features/stopwatch/presentation/pages/stopwatch_page.dart';
+import 'package:utils/utils.dart' show GoRouterRefreshStream;
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 

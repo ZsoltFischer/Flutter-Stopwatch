@@ -29,6 +29,75 @@
       "type": "dart",
       "program": "lib/main_production.dart",
       "args": ["--flavor", "production", "--target", "lib/main_production.dart"]
+    },
+    // ------------------- TESTING CONFIGS -------------------
+    {
+      "name": "Test (development)",
+      "request": "launch",
+      "type": "dart",
+      "program": "test",
+      "args": [
+        "--flavor",
+        "development"
+      ]
+    },
+    {
+      "name": "Test (staging)",
+      "request": "launch",
+      "type": "dart",
+      "program": "test",
+      "args": [
+        "--flavor",
+        "staging"
+      ]
+    },
+    {
+      "name": "Test (production)",
+      "request": "launch",
+      "type": "dart",
+      "program": "test",
+      "args": [
+        "--flavor",
+        "production"
+      ]
+    },
+    // ------------- INTEGRATION TESTING CONFIGS -------------
+    {
+      "name": "Integration Test (development)",
+      "request": "launch",
+      "type": "dart",
+      "program": "integration_test/app_test.dart",
+      "args": [
+        "--flavor",
+        "development",
+        "--target",
+        "integration_test/app_test.dart"
+      ]
+    },
+    {
+      "name": "Integration Test (staging)",
+      "request": "launch",
+      "type": "dart",
+      "program": "integration_test/app_test.dart",
+      "args": [
+        "--flavor",
+        "staging",
+        "--target",
+        "integration_test/app_test.dart"
+      ]
+    },
+    {
+      "name": "Integration Test (production)",
+      "request": "launch",
+      "type": "dart",
+      "program": "integration_test/app_test.dart",
+      "args": [
+        "--flavor",
+        "production",
+        "--target",
+        "integration_test/app_test.dart"
+      ]
     }
   ]
 }
+ 
