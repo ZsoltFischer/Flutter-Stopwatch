@@ -1,5 +1,6 @@
 /// Helper to parse duration strings in the format "HH:MM:SS.mmm"
-/// e.g. "00:01:23.456" -> Duration of 1 minute, 23 seconds, and 456 milliseconds.
+/// e.g. "00:01:23.456" -> Duration of 1 minute, 23 seconds,
+/// and 456 milliseconds.
 Duration parseDuration(String text) {
   // Assumes format: HH:MM:SS.mmm
   final regex = RegExp(r'^(\d{2}):(\d{2}):(\d{2})\.(\d{3})$');

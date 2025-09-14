@@ -22,6 +22,8 @@ sealed class StopwatchState extends Equatable {
 
   @override
   String toString() =>
+      /// Prettier logs
+      // ignore: lines_longer_than_80_chars
       'StopwatchState(durationInMilliseconds: $elapsedTimeInMs, laps: ${laps.length})';
 }
 
@@ -46,6 +48,8 @@ class StopwatchInitial extends StopwatchState {
 
   @override
   String toString() =>
+      /// Prettier logs
+      // ignore: lines_longer_than_80_chars
       'StopwatchInitial(durationInMilliseconds: $elapsedTimeInMs, laps: ${laps.length})';
 }
 
@@ -79,6 +83,8 @@ class StopwatchRunning extends StopwatchState {
 
   @override
   String toString() =>
+      /// Prettier logs
+      // ignore: lines_longer_than_80_chars
       'StopwatchRunning(durationInMilliseconds: $elapsedTimeInMs, startTime: $startTime, laps: ${laps.length})';
 }
 
@@ -103,5 +109,7 @@ class StopwatchPaused extends StopwatchState {
 
   @override
   String toString() =>
+      /// Prettier logs
+      // ignore: lines_longer_than_80_chars
       'StopwatchPaused(durationInMilliseconds: $elapsedTimeInMs, laps: ${laps.length})';
 }

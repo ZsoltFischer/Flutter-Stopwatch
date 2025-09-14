@@ -17,7 +17,8 @@ class Workflows {
     await robot.tapStopButton();
   }
 
-  /// Starts, records a lap, pauses, resumes, records another lap, pauses again, and stops.
+  /// Starts, records a lap, pauses, resumes, records another lap,
+  /// pauses again, and stops.
   Future<void> fullCycleWorkflow() async {
     await robot.tapStartButton();
     await robot.tapLapButton();
@@ -41,7 +42,8 @@ class Workflows {
     await robot.tapStopButton();
   }
 
-  /// Starts the stopwatch, lets it run for a duration, pauses, resumes, and stops.
+  /// Starts the stopwatch, lets it run for a duration,
+  /// pauses, resumes, and stops.
   Future<void> startPauseResumeStopWorkflow() async {
     await robot.tapStartButton();
     await robot.tester.pump(const Duration(seconds: 5));

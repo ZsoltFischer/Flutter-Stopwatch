@@ -8,10 +8,13 @@ import 'package:stopwatch/features/stopwatch/domain/entities/entities.dart';
 /// This class is a dedicated service for managing the stopwatch timer.
 /// It handles starting, pausing, stopping, and recording laps
 ///
-/// The service emits updates via a stream, allowing subscribers to listen for changes in the stopwatch state.
-/// It also enforces a maximum duration limit to prevent the stopwatch from running indefinitely.
+/// The service emits updates via a stream, allowing subscribers to
+/// listen for changes in the stopwatch state.
+/// It also enforces a maximum duration limit to prevent the
+/// stopwatch from running indefinitely.
 class StopwatchService {
-  /// Creates a [StopwatchService] with an optional tick limit (default is 99 hours).
+  /// Creates a [StopwatchService] with an optional tick limit
+  /// (default is 99 hours).
   StopwatchService({
     double tickFrequencyHz = 60,
     Duration tickLimit = const Duration(hours: 99),

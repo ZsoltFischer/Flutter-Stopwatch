@@ -4,12 +4,14 @@ import 'package:stopwatch/features/stopwatch/domain/repositories/stopwatch_repos
 import 'package:stopwatch/features/stopwatch/domain/services/stopwatch_service.dart';
 import 'package:utils/utils.dart' show Result;
 
-/// Implementation of [StopwatchRepository] that interacts with the [StopwatchService].
-/// This class serves as a bridge between the domain layer and the service layer,
-/// delegating stopwatch operations to the service.
+/// Implementation of [StopwatchRepository] that interacts with the
+/// [StopwatchService].
+/// This class serves as a bridge between the domain layer
+/// and the service layer, delegating stopwatch operations to the service.
 ///
-/// Implementation of [StopwatchRepository] that interacts with the [StopwatchService].
-/// This class serves as a bridge between the domain layer and the service layer,
+/// Implementation of [StopwatchRepository] that interacts
+/// with the [StopwatchService].
+/// This class serves as a bridge between the domain layer and the service layer
 /// delegating stopwatch operations to the service.
 class StopwatchRepositoryImpl implements StopwatchRepository {
   /// Creates a [StopwatchRepositoryImpl] with the given [StopwatchService].

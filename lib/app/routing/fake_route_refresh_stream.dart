@@ -1,5 +1,6 @@
 // Dummy usage only, for showcasing purposes
-// ignore_for_file: deprecated_member_use_from_same_package, avoid_positional_boolean_parameters
+// ignore_for_file: deprecated_member_use_from_same_package,
+// avoid_positional_boolean_parameters
 
 import 'dart:async';
 
@@ -16,6 +17,9 @@ class FakeRouteRefreshStream {
 
   /// Utility methods to emit dummy values
   static void emitAuth(String? value) => authController.add(value);
+
+  /// Ignored because dummy usage only
+  // ignore: avoid_positional_boolean_parameters
   static void emitConnectivity(bool? value) =>
       connectivityController.add(value);
 

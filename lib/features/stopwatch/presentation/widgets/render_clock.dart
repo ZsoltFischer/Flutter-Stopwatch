@@ -38,7 +38,8 @@ class _RenderClockState extends State<RenderClock> {
   @override
   Widget build(BuildContext context) {
     // A custom widget that holds the clock's render objects.
-    // It takes a list of hands to be laid out and painted by the main clock render object.
+    // It takes a list of hands to be laid out and painted by
+    //the main clock render object.
     return CustomClockRender(
       time: _currentTime,
       children: const [
@@ -54,7 +55,8 @@ class _RenderClockState extends State<RenderClock> {
 }
 
 // A MultiChildRenderObjectWidget that creates the main RenderClockFace.
-// This is the bridge between the declarative Widget tree and the imperative RenderObject tree.
+// This is the bridge between the declarative
+//Widget tree and the imperative RenderObject tree.
 class CustomClockRender extends MultiChildRenderObjectWidget {
   const CustomClockRender({
     required this.time,
@@ -191,7 +193,7 @@ class RenderClockHand extends RenderBox {
   }
 }
 
-// A custom RenderBox that handles the layout and painting of the entire clock face.
+// A custom RenderBox that handles the layout and painting of the entire clock.
 // It manages its children (the clock hands).
 class RenderClockFace extends RenderBox
     with ContainerRenderObjectMixin<RenderBox, ClockHandParentData> {
@@ -227,11 +229,11 @@ class RenderClockFace extends RenderBox
     }
   }
 
-  // The performLayout method calculates the position and rotation of each child.
+  // The performLayout method calculates the position and rotation of each child
   @override
   void performLayout() {
     // Calculate the angles for the hands based on the current time.
-    // We use a mix of seconds and milliseconds for smoother second hand movement.
+    // We use a mix of second and milliseconds for smoother second hand movement
     final second = time.second + time.millisecond / 1000.0;
     final minute = time.minute + second / 60.0;
     final hour = time.hour + minute / 60.0;
@@ -326,8 +328,10 @@ class RenderClockFace extends RenderBox
     // The hands are children of this render object, so we paint them next.
     var child = firstChild;
     while (child != null) {
-      // Paint each child (the hands). The child's own paint method handles its drawing.
-      // The child's position is relative to its parent's origin, which is at `offset`.
+      // Paint each child (the hands).
+      // The child's own paint method handles its drawing.
+      // The child's position is relative to its parent's origin,
+      // which is at `offset`.
       context.paintChild(child, offset);
       child = childAfter(child);
     }

@@ -8,7 +8,8 @@ import 'package:utils/src/exceptions/crash_reporter.dart';
 // ignore: one_member_abstracts
 abstract class LoggingSink {
   @protected
-  /// Handle a log entry with given [level], [message], optional [error] and [stackTrace]
+  /// Handle a log entry with given [level], [message],
+  /// optional [error] and [stackTrace]
   FutureOr<void> handleLogEntry(
     Level level,
     String message, {
@@ -128,7 +129,8 @@ class CustomLogger {
     log(Level.SEVERE, message, error: error, stackTrace: stackTrace);
   }
 
-  /// A very severe error event that will presumably lead the application to abort.
+  /// A very severe error event that will presumably lead
+  /// the application to abort.
   void shout(String message, {Object? error, StackTrace? stackTrace}) {
     log(Level.SHOUT, message, error: error, stackTrace: stackTrace);
   }

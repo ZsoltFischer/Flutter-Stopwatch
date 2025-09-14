@@ -12,7 +12,8 @@ part 'stopwatch_state.dart';
 
 /// BLoC that manages the UI state of the stopwatch application.
 ///
-/// It implements the logic to start, pause, stop, and record laps in the stopwatch.
+/// It implements the logic to start, pause, stop,
+/// and record laps in the stopwatch.
 /// It listens to the [StopwatchService] for duration updates and emits
 /// corresponding states to the UI.
 ///

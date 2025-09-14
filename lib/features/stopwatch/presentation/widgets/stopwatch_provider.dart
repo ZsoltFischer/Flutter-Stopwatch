@@ -18,19 +18,16 @@ class StopwatchProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        /// Provide the StopwatchService
         Provider(
           create: (context) => StopwatchService(),
         ),
 
-        /// Provide the StopwatchRepositoryImpl which depends on StopwatchService
         RepositoryProvider<StopwatchRepositoryImpl>(
           create: (context) => StopwatchRepositoryImpl(
             stopwatchService: context.read<StopwatchService>(),
           ),
         ),
 
-        /// StopwatchBloc: depending on StopwatchService & StopwatchRepositoryImpl
         BlocProvider<StopwatchBloc>(
           create: (context) => StopwatchBloc(
             stopwatchService: context.read<StopwatchService>(),

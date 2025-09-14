@@ -35,7 +35,8 @@ void _setupDependencies() {
   GetIt.instance.registerSingleton<CustomLogger>(CustomLogger());
 }
 
-/// Registers global error handlers for Flutter, platform, and widget build errors.
+/// Registers global error handlers for Flutter, platform,
+/// and widget build errors.
 void _registerErrorHandlers(CustomLogger errorLogger) {
   // Handle Flutter framework errors
   FlutterError.onError = (FlutterErrorDetails details) {

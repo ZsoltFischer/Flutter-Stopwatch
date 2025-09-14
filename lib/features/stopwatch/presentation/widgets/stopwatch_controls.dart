@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.dart';
 import 'package:utils/utils.dart';
 
-/// A widget that displays the stopwatch controls (Start, Pause, Resume, Stop, Lap).
+/// A widget that displays the stopwatch controls
+/// (Start, Pause, Resume, Stop, Lap).
 /// The available controls change based on the current state of the stopwatch.
 ///
 /// States and their corresponding controls:
