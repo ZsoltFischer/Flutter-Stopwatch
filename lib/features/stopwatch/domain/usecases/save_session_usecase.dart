@@ -1,3 +1,4 @@
+import 'package:stopwatch/features/stopwatch/domain/entities/stopwatch_session_entity.dart';
 import 'package:stopwatch/features/stopwatch/domain/repositories/stopwatch_repository.dart';
 
 /// Use case for saving a session in the stopwatch.
@@ -9,7 +10,7 @@ class SaveSessionUsecase {
 
   final StopwatchRepository _stopwatchRepository;
 
-  void call() {
-    _stopwatchRepository.recordLap();
+  void call(StopwatchSessionEntity session) {
+    _stopwatchRepository.saveSession(session);
   }
 }
