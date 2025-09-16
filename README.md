@@ -83,7 +83,6 @@ This project contains 3 flavors:
 
 To run the desired flavor either use the launch configuratiions in VSCode or run the appropriate command:
 
-     - Run: 
 ```sh
 # Development
 $ flutter run --flavor development --target lib/main_development.dart
@@ -95,7 +94,8 @@ $ flutter run --flavor staging --target lib/main_staging.dart
 $ flutter run --flavor production --target lib/main_production.dart
 ```
 4. **Run tests**
-     - Unit/Widget tests: 
+Unit/Widget tests: 
+
 ```sh
 $ flutter test
 ```
@@ -104,7 +104,8 @@ or
 $ very_good test --coverage --test-randomize-ordering-seed random
 ```
 
-     - Integration tests (requires emulator/device):
+Integration tests (requires emulator/device):
+
 ```sh
 $ flutter test integration_test --flavor <flavor> integration_test/app_test.dart
 ```
