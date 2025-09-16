@@ -3,11 +3,6 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:utils/utils.dart';
 
-/// A custom easing function type definition.
-/// It takes a double value `t` (ranging from 0 to 1)
-/// and returns a double value representing the eased value.
-typedef EasingFunction = double Function(double t);
-
 /// The [HandPainter] class is responsible for rendering a clock hand
 /// on a canvas. It calculates the angle of the hand based on the elapsed
 /// time and the full cycle duration. The hand's length and appearance

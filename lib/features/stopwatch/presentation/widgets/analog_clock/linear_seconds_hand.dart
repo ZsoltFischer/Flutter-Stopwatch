@@ -3,6 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.dart';
 import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/clock_hand_painter.dart';
 
+/// A widget that displays a linear seconds hand for an analog clock.
+/// The hand updates its position based on the elapsed time
+/// from the [StopwatchBloc].
+///
+///! This widget is NOT optimized for performance
+///! and should be used with caution in high-frequency update scenarios.
 class LinearSecondsHand extends StatelessWidget {
   const LinearSecondsHand({super.key});
 

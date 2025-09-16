@@ -22,8 +22,8 @@ class AnalogClock extends StatelessWidget {
   Widget build(BuildContext context) {
     final clockComponents = <Widget>[
       const ClockFace(),
-      PerformantAnalogClock.hours(),
-      PerformantAnalogClock.minutes(),
+      PerformantClockHand.hours(),
+      PerformantClockHand.minutes(),
       const LinearSecondsHand(),
     ];
 

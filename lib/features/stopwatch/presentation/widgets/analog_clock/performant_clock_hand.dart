@@ -8,9 +8,9 @@ import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/c
 /// at a throttled rate to reduce unnecessary rebuilds.
 /// This widget is suitable for minute and hour hands
 /// where high-frequency updates are not critical.
-class PerformantAnalogClock extends StatefulWidget {
-  /// Creates a [PerformantAnalogClock] widget.
-  const PerformantAnalogClock({
+class PerformantClockHand extends StatefulWidget {
+  /// Creates a [PerformantClockHand] widget.
+  const PerformantClockHand({
     required Duration throttleDuration,
     required Duration fullCycle,
     required Paint painter,
@@ -21,11 +21,11 @@ class PerformantAnalogClock extends StatefulWidget {
        _lengthFactor = lengthFactor,
        _painter = painter;
 
-  /// Creates a [PerformantAnalogClock] configured as the default minute hand.
+  /// Creates a [PerformantClockHand] configured as the default minute hand.
   ///
   /// The minute hand updates its position every 10 seconds,
-  factory PerformantAnalogClock.minutes({Key? key}) {
-    return PerformantAnalogClock(
+  factory PerformantClockHand.minutes({Key? key}) {
+    return PerformantClockHand(
       key: key,
       throttleDuration: const Duration(seconds: 10),
       fullCycle: const Duration(hours: 1),
@@ -37,11 +37,11 @@ class PerformantAnalogClock extends StatefulWidget {
     );
   }
 
-  /// Creates a [PerformantAnalogClock] configured as the default hour hand.
+  /// Creates a [PerformantClockHand] configured as the default hour hand.
   ///
   /// The hour hand updates its position every 10 seconds,
-  factory PerformantAnalogClock.hours({Key? key}) {
-    return PerformantAnalogClock(
+  factory PerformantClockHand.hours({Key? key}) {
+    return PerformantClockHand(
       key: key,
       throttleDuration: const Duration(seconds: 10),
       fullCycle: const Duration(hours: 12),
@@ -70,10 +70,10 @@ class PerformantAnalogClock extends StatefulWidget {
   double get lengthFactor => _lengthFactor;
 
   @override
-  State<PerformantAnalogClock> createState() => _PerformantAnalogClockState();
+  State<PerformantClockHand> createState() => _PerformantClockHandState();
 }
 
-class _PerformantAnalogClockState extends State<PerformantAnalogClock> {
+class _PerformantClockHandState extends State<PerformantClockHand> {
   late final Stream<StopwatchState> _filteredStream;
 
   @override
