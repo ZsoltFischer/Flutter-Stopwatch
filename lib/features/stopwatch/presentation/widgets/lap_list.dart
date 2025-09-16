@@ -15,15 +15,14 @@ class LapList extends StatelessWidget {
       buildWhen: (previous, current) =>
           !listEquals(previous.laps, current.laps),
       builder: (context, state) {
-        final laps = state.laps.reversed.toList();
-
+        final lapCount = state.laps.length;
         return SliverPadding(
           padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
           sliver: SliverList.separated(
             separatorBuilder: (context, index) => const Divider(),
-            itemCount: laps.length,
+            itemCount: lapCount,
             itemBuilder: (context, index) {
-              final lap = laps[index];
+              final lap = state.laps[lapCount - 1 - index]; // Reverse order
               return LapListTile(
                 key: ValueKey(lap.toString()),
                 lap: lap,

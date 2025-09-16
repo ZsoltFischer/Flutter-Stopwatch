@@ -16,7 +16,7 @@ class LapListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoListTile(
       title: Text('Lap ${lap.index}'.hardcoded),
-      trailing: Text(Duration(milliseconds: lap.lapTime).toDigital()),
+      trailing: Text(Duration(milliseconds: lap.lapTime).toDigitalClock()),
     );
   }
 }

@@ -6,6 +6,25 @@ import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.da
 import 'fakes/fake_stopwatch_bloc.dart';
 
 extension StopwatchControlsTester on WidgetTester {
+  Future<void> pumpWithFakeStopwatchBloc({
+    required StopwatchState initialState,
+    required FakeStopwatchBloc fakeBloc,
+    required Widget child,
+  }) async {
+    fakeBloc.emit(initialState);
+
+    await pumpWidget(
+      BlocProvider<StopwatchBloc>.value(
+        value: fakeBloc,
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: child,
+        ),
+      ),
+    );
+    await pumpAndSettle();
+  }
+
   Future<void> pumpFakeStopwatchWithSliverChild({
     required StopwatchState initialState,
     required FakeStopwatchBloc fakeBloc,

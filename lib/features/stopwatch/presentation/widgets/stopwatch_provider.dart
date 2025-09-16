@@ -6,7 +6,13 @@ import 'package:stopwatch/features/stopwatch/domain/services/stopwatch_service.d
 import 'package:stopwatch/features/stopwatch/domain/usecases/usecases.dart';
 import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.dart';
 
+/// A provider widget that sets up the necessary
+/// dependencies for the stopwatch feature,
+/// including the [StopwatchService], [StopwatchRepositoryImpl],
+/// and [StopwatchBloc]. This widget should wrap
+/// the part of the widget tree that requires access to these dependencies.
 class StopwatchProvider extends StatelessWidget {
+  /// Creates a [StopwatchProvider] widget.
   const StopwatchProvider({
     required this.child,
     super.key,

@@ -17,7 +17,7 @@ sealed class AppException implements Exception {
 }
 
 // =============================================================================
-// Persistence related exceptions
+// * Persistence related exceptions
 // =============================================================================
 
 /// Exceptions related to persistence and local storage must extend this class

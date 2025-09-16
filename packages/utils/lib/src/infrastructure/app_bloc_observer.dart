@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:utils/utils.dart' show CustomLogger;
+import 'package:utils/src/logging/custom_logger.dart';
 
 /// Custom [BlocObserver] for logging bloc events and errors.
 class AppBlocObserver extends BlocObserver {
@@ -10,9 +10,10 @@ class AppBlocObserver extends BlocObserver {
   final CustomLogger _logger;
 
   @override
-  // Strict types ignored to match the overridden method
-  // ignore: strict_raw_type
-  void onTransition(Bloc bloc, Transition transition) {
+  void onTransition(
+    Bloc<dynamic, dynamic> bloc,
+    Transition<dynamic, dynamic> transition,
+  ) {
     _logger.fine(
       '${bloc.runtimeType}: $transition',
     );
@@ -20,9 +21,7 @@ class AppBlocObserver extends BlocObserver {
   }
 
   @override
-  // Strict types ignored to match the overridden method
-  // ignore: strict_raw_type
-  void onChange(BlocBase bloc, Change change) {
+  void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
     _logger.fine(
       '${bloc.runtimeType}: $change',
     );

@@ -1,30 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:stopwatch/app/presentation/widgets/scaffold_with_nested_navigation.dart'
-    show GoBranch;
 import 'package:utils/utils.dart';
 
 class SideNavigationRail extends StatelessWidget {
   const SideNavigationRail({
-    required this.goBranch,
-    required this.navigationShell,
+    required this.onBranchSelected,
+    required StatefulNavigationShell navigationShell,
     super.key,
-  });
+  }) : _navigationShell = navigationShell;
 
-  final StatefulNavigationShell navigationShell;
-
-  final GoBranch goBranch;
+  final StatefulNavigationShell _navigationShell;
+  final ValueChanged<int> onBranchSelected;
 
   @override
   Widget build(BuildContext context) {
     return NavigationRail(
       indicatorColor: CupertinoColors.activeBlue.withOpacity(0.3),
-      selectedIndex: navigationShell.currentIndex,
+      selectedIndex: _navigationShell.currentIndex,
       groupAlignment: -1,
-      onDestinationSelected: goBranch,
+      onDestinationSelected: onBranchSelected,
       labelType: NavigationRailLabelType.all,
-      destinations: <NavigationRailDestination>[
+      destinations: [
         NavigationRailDestination(
           icon: const Icon(CupertinoIcons.stopwatch),
           selectedIcon: const Icon(CupertinoIcons.stopwatch_fill),

@@ -27,8 +27,8 @@ class StopwatchControls extends StatelessWidget {
             const _StartButton(),
           ],
           StopwatchRunning() => [
-            const _PauseButton(),
             const _StopButton(),
+            const _PauseButton(),
             const _LapButton(),
           ],
           StopwatchPaused() => [
@@ -38,9 +38,10 @@ class StopwatchControls extends StatelessWidget {
         };
 
         return SliverToBoxAdapter(
-          child: Row(
+          child: Wrap(
             spacing: 16,
-            mainAxisAlignment: MainAxisAlignment.center,
+            runSpacing: 16,
+            alignment: WrapAlignment.center,
             children: buttons,
           ),
         );

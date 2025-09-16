@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:stopwatch/app/presentation/widgets.dart';
+import 'package:stopwatch/app/presentation/widgets/default_sliver_appbar.dart';
 import 'package:utils/utils.dart';
 
 class DummyProfilePage extends StatelessWidget {
@@ -15,15 +15,14 @@ class DummyProfilePage extends StatelessWidget {
       backgroundColor: CupertinoColors.systemGroupedBackground,
       child: CustomScrollView(
         slivers: [
-          MobilePageNavbar(title: 'Profile'.hardcoded),
+          DefaultSliverAppbar(title: 'Profile'.hardcoded),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
               child: Text(
-                '''
-                This page was only created to have an extra route
-                for demonstrating responsivity and navigation.
-                '''
+                // Long text
+                // ignore: lines_longer_than_80_chars
+                'This page was only created to have an extra route for demonstrating responsivity and navigation.'
                     .hardcoded,
               ),
             ),

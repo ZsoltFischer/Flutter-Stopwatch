@@ -4,15 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:stopwatch/app/presentation/widgets/side_navigation_rail.dart';
 import 'package:utils/utils.dart';
 
-typedef GoBranch = void Function(int)?;
-
-/// Creates a scaffold with nested navigation.
 class ScaffoldWithNestedNavigation extends StatelessWidget {
-  /// Create a new [ScaffoldWithNestedNavigation] instance
   const ScaffoldWithNestedNavigation({
-    required this.navigationShell,
+    required StatefulNavigationShell navigationShell,
     super.key,
-  });
+  }) : _navigationShell = navigationShell;
 
   static Page<void> page({
     required Key key,
@@ -24,15 +20,7 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
     ),
   );
 
-  final StatefulNavigationShell navigationShell;
-
-  /// Select the branch on [index] from the app shell route
-  void _goBranch(int index) {
-    navigationShell.goBranch(
-      index,
-      initialLocation: index == navigationShell.currentIndex,
-    );
-  }
+  final StatefulNavigationShell _navigationShell;
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +30,11 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
           if (constraints.smallest.width <= Breakpoints.tablet) {
             return CupertinoTabScaffold(
               tabBar: CupertinoTabBar(
-                currentIndex: navigationShell.currentIndex,
-                onTap: _goBranch,
+                currentIndex: _navigationShell.currentIndex,
+                onTap: (index) => _navigationShell.goBranch(
+                  index,
+                  initialLocation: index == _navigationShell.currentIndex,
+                ),
                 items: [
                   BottomNavigationBarItem(
                     icon: const Icon(CupertinoIcons.stopwatch),
@@ -57,8 +48,8 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
                   ),
                 ],
               ),
-              tabBuilder: (_, _) => TapRegion(
-                child: navigationShell,
+              tabBuilder: (context, index) => TapRegion(
+                child: _navigationShell,
                 onTapOutside: (_) =>
                     FocusManager.instance.primaryFocus?.unfocus(),
               ),
@@ -67,13 +58,14 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
           return Row(
             children: [
               SideNavigationRail(
-                navigationShell: navigationShell,
-                goBranch: _goBranch,
+                navigationShell: _navigationShell,
+                onBranchSelected: (index) => _navigationShell.goBranch(
+                  index,
+                  initialLocation: index == _navigationShell.currentIndex,
+                ),
               ),
               const VerticalDivider(thickness: 1, width: 1),
-              Expanded(
-                child: navigationShell,
-              ),
+              Expanded(child: _navigationShell),
             ],
           );
         },

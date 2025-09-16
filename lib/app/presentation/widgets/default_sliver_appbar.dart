@@ -2,21 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// A custom navigation bar widget for the app.
-class MobilePageNavbar extends StatelessWidget {
-  /// Creates an instance of [MobilePageNavbar].
-  const MobilePageNavbar({
-    required this.title,
+class DefaultSliverAppbar extends StatelessWidget {
+  /// Creates an instance of [DefaultSliverAppbar].
+  const DefaultSliverAppbar({
+    required String title,
     super.key,
-  });
+  }) : _title = title;
 
-  final String title;
+  /// The title text displayed in the app bar.
+  final String _title;
 
   @override
   Widget build(BuildContext context) {
     return CupertinoSliverNavigationBar(
       backgroundColor: CupertinoColors.systemGroupedBackground,
-      heroTag: ValueKey(title),
-      largeTitle: Text(title),
+      heroTag: ValueKey(_title),
+      largeTitle: Text(_title),
       border: Border.all(color: Colors.transparent),
     );
   }

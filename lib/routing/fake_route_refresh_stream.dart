@@ -4,6 +4,10 @@
 
 import 'dart:async';
 
+/// A fake route refresh stream to demonstrate how to use
+/// GoRouterRefreshStream from the `utils` package.
+///
+/// This is a temporary solution until authentication and connectivity
 class FakeRouteRefreshStream {
   @Deprecated('Remove once authentication is implemented')
   static final authController = StreamController<String?>.broadcast();
