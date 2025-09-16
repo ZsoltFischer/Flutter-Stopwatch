@@ -11,6 +11,7 @@ class SaveSessionUsecase {
   final StopwatchRepository _stopwatchRepository;
 
   void call(StopwatchSessionEntity session) {
+    //!TODO Implement proper error handling etc.
     _stopwatchRepository.saveSession(session);
   }
 }

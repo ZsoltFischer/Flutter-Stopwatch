@@ -11,6 +11,7 @@ class LoadSessionUseCase {
   Future<Result<StopwatchSessionEntity, AppException>> call(
     String id,
   ) async {
+    //!TODO Implement proper error handling etc.
     return _repository.loadSession(id);
   }
 }
