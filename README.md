@@ -21,15 +21,17 @@ The project template was generated with [very_good_cli](https://pub.dev/packages
     - Custom robots and fakes for UI and business logic coverage
 - **Platform Support**: Android, iOS, Web, macOS, Windows
 
+The `packages/` directory contains shared Flutter package(s) for modularity and code reuse. Each package is intended to be reused across multiple apps inside an organization - either in a `monorepo` setup like in this project - or `published separately` for easy dependency handling. 
+
+- **utils/**: Common utilities, constants, extensions, and error handling used across multiple apps and features.
+
+
 ## ⚠️ Missing Features / Roadmap
 
 - **Persistence (Planned)**: The architecture is prepared for future support of persistent stopwatch state, enabling the stopwatch to continue running in the background and survive app restarts.
   
     ⚠️ *This feature is not yet implemented. The codebase is structured for easy extension to background and persistent operation, but persistence is currently missing.*
 
-The `packages/` directory contains shared Flutter package(s) for modularity and code reuse. Each package is intended to be reused across multiple apps inside an organization - either in a `monorepo` setup like in this project - or `published separately` for easy dependency handling. 
-
-- **utils/**: Common utilities, constants, extensions, and error handling used across multiple apps and features.
 
 ## Project Structure
 
@@ -79,9 +81,9 @@ This project contains 3 flavors:
 - staging
 - production
 
-To run the desired flavor either use the launch configurationd in VSCode or run the appropriate command:
+To run the desired flavor either use the launch configuratiions in VSCode or run the appropriate command:
 
-    - Run
+     - Run: 
 ```sh
 # Development
 $ flutter run --flavor development --target lib/main_development.dart
@@ -121,6 +123,7 @@ $ open coverage/index.html
 - **Unit Tests**: Validate business logic and state transitions.
 - **Widget Tests**: Verify UI rendering and interaction in `test/feature/stopwatch/presentation/widgets/`.
 - **Integration Tests**: Use `integration_test/app_robot.dart` for complex workflows and end-to-end scenarios.
+- **⚠️ Golden Tests**: On the roadmap. Verify individual components like the analog clock face
 - **Test Helpers**: Custom fakes, robots, and pump helpers for maintainable tests.
 
 ## Architecture
@@ -129,21 +132,6 @@ $ open coverage/index.html
 -- **Data Layer**: Handles data sources, models, and repository implementations.
 -- **Domain Layer**: Contains entities, repository interfaces, services, and use cases.
 -- **Presentation Layer**: Manages UI, Bloc state, and widget composition.
-
-## Localization
-
-- ARB files in `lib/l10n/arb/` for supported languages
-- Generated localization classes in `lib/l10n/gen/`
-
-## Author
-
-- [Zsolt Fischer](https://github.com/ZsoltFischer)
-
----
-
-For more details, see the source code and tests in the repository.
-
----
 
 ## Working with Translations 
 
@@ -256,6 +244,17 @@ flutter gen-l10n --arb-dir="lib/l10n/arb"
 
 Alternatively, run `flutter run` and code generation will take place automatically.
 
+
+## Author
+
+- [Zsolt Fischer](https://github.com/ZsoltFischer)
+
+---
+
+For more details, see the source code and tests in the repository.
+
+---
+
 [coverage_badge]: coverage_badge.svg
 [flutter_localizations_link]: https://api.flutter.dev/flutter/flutter_localizations/flutter_localizations-library.html
 [internationalization_link]: https://flutter.dev/docs/development/accessibility-and-localization/internationalization
@@ -264,3 +263,5 @@ Alternatively, run `flutter run` and code generation will take place automatical
 [very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
 [very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
 [very_good_cli_link]: https://github.com/VeryGoodOpenSource/very_good_cli
+
+
