@@ -7,7 +7,7 @@ import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/c
 /// This hand updates its position every second,
 /// moving in discrete steps to indicate the passing seconds.
 ///
-/// * Animartions are not yet implemented.
+/// * Animations are not yet implemented.
 class TickingSecondsHand extends StatelessWidget {
   /// Creates a [TickingSecondsHand] widget.
   const TickingSecondsHand({super.key});
