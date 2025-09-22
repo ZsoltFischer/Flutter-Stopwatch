@@ -58,7 +58,7 @@ class AppRobot {
     Duration tolerance = const Duration(milliseconds: 50),
   }) async {
     await tester.pumpAndSettle();
-    final clockFinder = find.byKey(const ValueKey('AccurateDigitalClock'));
+    final clockFinder = find.byKey(const ValueKey('DigitalClock'));
     expect(clockFinder, findsOneWidget);
     final clockWidget = tester.widget<Text>(clockFinder);
     final actualText = clockWidget.data ?? '';
