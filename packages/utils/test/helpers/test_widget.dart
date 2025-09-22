@@ -13,6 +13,7 @@ class TestWidget extends StatelessWidget {
       child: Builder(
         builder: (context) {
           onBuild(context);
+
           return const SizedBox.shrink();
         },
       ),

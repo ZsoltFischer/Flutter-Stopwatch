@@ -1,6 +1,6 @@
 import 'package:logging/logging.dart';
 import 'package:utils/src/logging/console_logging_sink.dart';
-import 'package:utils/src/logging/crash_reporter_sink.dart';
+import 'package:utils/src/logging/crash_reporting_sink.dart';
 import 'package:utils/src/logging/logging_sink.dart';
 
 /// Logger with multiple sinks
@@ -13,12 +13,10 @@ import 'package:utils/src/logging/logging_sink.dart';
 /// in release mode.
 class CustomLogger {
   /// Creates a logger with optional sinks
-  CustomLogger({
-    String name = 'App',
-    List<LoggingSink>? sinks,
-  }) : _logger = Logger(name),
-       _sinks =
-           sinks ?? [const ConsoleLoggingSink(), const CrashReportingSink()] {
+  CustomLogger({String name = 'App', List<LoggingSink>? sinks})
+    : _logger = Logger(name),
+      _sinks =
+          sinks ?? [const ConsoleLoggingSink(), const CrashReportingSink()] {
     _logger.level = Level.ALL;
     _logger.onRecord.listen(_handleRecord);
   }

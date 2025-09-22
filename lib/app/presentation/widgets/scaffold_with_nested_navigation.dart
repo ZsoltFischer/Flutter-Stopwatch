@@ -55,6 +55,7 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
               ),
             );
           }
+
           return Row(
             children: [
               SideNavigationRail(

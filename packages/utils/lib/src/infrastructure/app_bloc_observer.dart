@@ -1,3 +1,5 @@
+// ignore_for_file: avoid-dynamic
+
 import 'package:bloc/bloc.dart';
 import 'package:utils/src/logging/custom_logger.dart';
 
@@ -14,17 +16,13 @@ class AppBlocObserver extends BlocObserver {
     Bloc<dynamic, dynamic> bloc,
     Transition<dynamic, dynamic> transition,
   ) {
-    _logger.fine(
-      '${bloc.runtimeType}: $transition',
-    );
+    _logger.fine('${bloc.runtimeType}: $transition');
     super.onTransition(bloc, transition);
   }
 
   @override
   void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
-    _logger.fine(
-      '${bloc.runtimeType}: $change',
-    );
+    _logger.fine('${bloc.runtimeType}: $change');
     super.onChange(bloc, change);
   }
 

@@ -10,6 +10,7 @@ const _laps = 'laps';
 /// This model is used to cache a session in local storage.
 /// Sessions can be restored and continued from the cache
 /// if the app was in the background or terminated.
+@Deprecated('Not in use yet')
 class StopwatchSessionModel {
   /// Creates a new instance of [StopwatchSessionModel].
   StopwatchSessionModel({
@@ -36,7 +37,7 @@ class StopwatchSessionModel {
     return StopwatchSessionModel(
       id: json[_id] as String,
       startTime: DateTime.parse(json[_startTime] as String),
-      laps: (json[_laps] as List<dynamic>)
+      laps: (json[_laps] as List)
           .map((lapJson) => LapModel.fromJson(lapJson as Map<String, dynamic>))
           .toList(),
     );
