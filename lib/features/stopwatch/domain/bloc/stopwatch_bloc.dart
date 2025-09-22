@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:stopwatch/features/stopwatch/domain/entities/stopwatch_state_entity.dart';
+import 'package:stopwatch/features/stopwatch/domain/entities/lap_entity.dart';
 import 'package:stopwatch/features/stopwatch/domain/services/stopwatch_service.dart';
 import 'package:stopwatch/features/stopwatch/domain/usecases/usecases.dart';
-import 'package:stopwatch/features/stopwatch/presentation/models/lap_viewmodel.dart';
 import 'package:stopwatch/features/stopwatch/presentation/utils/event_transformers.dart';
 
 part 'stopwatch_event.dart';
@@ -32,11 +31,16 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
        _stopStopwatch = stopStopwatchUsecase,
        _recordLapUsecase = recordLapUsecase,
        super(const StopwatchInitial()) {
-    on<StopwatchTick>(_onStopwatchTick, transformer: sequential());
     on<StopwatchStart>(_onStopwatchStart, transformer: sequential());
     on<StopwatchPause>(_onStopwatchPause, transformer: sequential());
     on<StopwatchStop>(_onStopwatchStopped, transformer: sequential());
     on<StopwatchRecordLap>(_onStopwatchRecordLap, transformer: sequential());
+    on<StopwatchLapsUpdated>(
+      _onStopwatchLapsUpdated,
+      transformer: sequential(),
+    );
+
+    _initializeLapSubscription();
   }
 
   /// ===============================================================
@@ -58,23 +62,20 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
   /// Usecase to record a lap.
   final RecordLapUsecase _recordLapUsecase;
 
-  /// Subscription to the service's duration stream.
-  StreamSubscription<StopwatchStateEntity>? _durationSubscription;
+  /// Subscription to the service's lap stream.
+  StreamSubscription<List<LapEntity>>? _lapSubscription;
 
   /// ===============================================================
   /// * Initialization & Private Methods
   /// ===============================================================
 
-  /// Initializes the BLoC by subscribing to the service's duration stream.
-  void _initializeDurationSubscription() {
-    // 1. cancel any existing subscription
-    _durationSubscription?.cancel();
-
-    // 2. Subscribe to the service's duration stream and add ticks to the BLoC.
-    _durationSubscription = _stopwatchService.durationStream.listen(
-      _onTick,
-      // onDone: stop,
-    );
+  void _initializeLapSubscription() {
+    _lapSubscription = _stopwatchService.lapStream.listen((laps) {
+      // When a new lap is recorded, update the BLoC state.
+      if (laps.isNotEmpty) {
+        add(StopwatchLapsUpdated(laps: laps));
+      }
+    });
   }
 
   /// ===============================================================
@@ -101,78 +102,68 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
     add(StopwatchRecordLap());
   }
 
+  /// Exposes a stream of elapsed milliseconds.
+  Stream<int> get msStream => _stopwatchService.msStream;
+
+  /// Exposes a stream of elapsed seconds, derived from the msStream.
+  Stream<int> get secondsStream => msStream
+      .map((milliseconds) => milliseconds ~/ Duration.millisecondsPerSecond)
+      .distinct();
+
+  /// Exposes a stream of elapsed minutes, emitting a double value every 2 seconds.
+  ///
+  /// This provides a finer granularity for the minute hand movement
+  /// on the analog clock without overwhelming updates.
+  Stream<double> get minuteStream => secondsStream
+      .where(
+        (seconds) => seconds % 2 == 0,
+      ) // Only pass values on 2-second intervals
+      .map((seconds) => seconds / Duration.secondsPerMinute)
+      .distinct();
+
+  /// Exposes a stream of elapsed hours, emitting a double value every minute.
+  ///
+  /// This provides a finer granularity for the hour hand movement
+  /// on the analog clock without overwhelming updates.
+  Stream<double> get hourStream => secondsStream
+      .where(
+        (seconds) => seconds % 60 == 0,
+      ) // Only pass values on 1-minute intervals
+      .map((seconds) => seconds / Duration.secondsPerHour)
+      .distinct();
+
+  /// Exposes a stream of laps to listen for new additions.
+  Stream<List<LapEntity>> get lapStream => _stopwatchService.lapStream;
+
   /// ===============================================================
   /// * Event Handlers
   /// ===============================================================
 
-  void _onTick(StopwatchStateEntity stopwatchState) {
-    add(StopwatchTick(stopwatchStateEntity: stopwatchState));
-  }
-
   /// Handle the start event by starting the service.
-  void _onStopwatchStart(
-    StopwatchStart event,
-    Emitter<StopwatchState> emit,
-  ) {
+  void _onStopwatchStart(StopwatchStart event, Emitter<StopwatchState> emit) {
     if (state is StopwatchRunning) {
       return;
     }
-
-    // 2. initialize the duration subscription
-    _initializeDurationSubscription();
-
-    // 3. start the service
     _startStopwatch();
-
-    // 4. emit the running state
-    emit(
-      StopwatchRunning(
-        elapsedTimeInMs: state.elapsedTimeInMs,
-        startTime: DateTime.now(),
-        laps: state.laps,
-      ),
-    );
+    emit(StopwatchRunning(laps: state.laps));
   }
 
   /// Handle the pause event by pausing the service and emitting a paused state.
-  void _onStopwatchPause(
-    StopwatchPause event,
-    Emitter<StopwatchState> emit,
-  ) {
+  void _onStopwatchPause(StopwatchPause event, Emitter<StopwatchState> emit) {
     if (state is! StopwatchRunning) {
       return;
     }
-    // 1. cancel any existing subscription
-    _durationSubscription?.cancel();
-
-    // 2. pause the service
     _pauseStopwatch();
-
-    // 3. emit the paused state
-    emit(
-      StopwatchPaused(
-        elapsedTimeInMs: state.elapsedTimeInMs,
-        laps: state.laps,
-      ),
-    );
+    emit(StopwatchPaused(laps: state.laps));
   }
 
-  /// Handle the reset event by resetting the service
+  /// Handle the stop event by resetting the service
   /// and emitting the initial state.
-  void _onStopwatchStopped(
-    StopwatchStop event,
-    Emitter<StopwatchState> emit,
-  ) {
+  void _onStopwatchStopped(StopwatchStop event, Emitter<StopwatchState> emit) {
     if (state is! StopwatchRunning && state is! StopwatchPaused) {
       return;
     }
-    // 1. cancel any existing subscription
-    _durationSubscription?.cancel();
-
-    // 2. stop the service
     _stopStopwatch();
-
-    // 3. emit the initial state
     emit(const StopwatchInitial());
   }
 
@@ -181,48 +172,17 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
     StopwatchRecordLap event,
     Emitter<StopwatchState> emit,
   ) {
-    /// Only record a lap if the stopwatch is running and has elapsed time.
-    if (state is StopwatchRunning && state.elapsedTimeInMs > 0) {
-      /// Record the lap using the usecase.
+    if (state is StopwatchRunning) {
       _recordLapUsecase();
     }
   }
 
-  /// Handle the tick event by updating the state with the new duration.
-  void _onStopwatchTick(
-    StopwatchTick event,
+  /// Handles lap updates from the service and updates the BLoC's state.
+  void _onStopwatchLapsUpdated(
+    StopwatchLapsUpdated event,
     Emitter<StopwatchState> emit,
   ) {
-    // 1. If the stopwatch is complete, stop the service and return.
-    if (event.stopwatchStateEntity.isComplete) {
-      /// If the stopwatch is complete, stop the service.
-      stop();
-      return;
-    }
-
-    // 2. Emit the appropriate state based on the current state.
-    if (state is StopwatchRunning) {
-      emit(
-        (state as StopwatchRunning).copyWith(
-          elapsedTimeInMs: event.stopwatchStateEntity.elapsedTimeInMs,
-          laps: List<LapViewModel>.unmodifiable(
-            event.stopwatchStateEntity.laps.map(LapViewModel.fromEntity),
-          ),
-        ),
-      );
-      return;
-    }
-    if (state is StopwatchPaused) {
-      emit(
-        (state as StopwatchPaused).copyWith(
-          elapsedTimeInMs: event.stopwatchStateEntity.elapsedTimeInMs,
-          laps: List<LapViewModel>.unmodifiable(
-            event.stopwatchStateEntity.laps.map(LapViewModel.fromEntity),
-          ),
-        ),
-      );
-      return;
-    }
+    emit(state.copyWith(laps: event.laps));
   }
 
   /// ==============================================================
@@ -232,8 +192,9 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
   // Clean up the subscriptions when the Bloc is closed.
   @override
   Future<void> close() {
-    _durationSubscription?.cancel();
+    _lapSubscription?.cancel();
     _stopwatchService.dispose();
+
     return super.close();
   }
 }

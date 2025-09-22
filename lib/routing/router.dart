@@ -31,13 +31,13 @@ GoRouter buildRouter() {
 
   /// Page route for Stopwatch.
   final stopwatch = GoRoute(
-    path: AppRoutes.stopwatch.path,
+    path: Routes.stopwatch.path,
     pageBuilder: (context, state) => StopwatchPage.page(),
   );
 
   /// Profile page route.
   final profile = GoRoute(
-    path: AppRoutes.profile.path,
+    path: Routes.profile.path,
     pageBuilder: (context, state) => DummyProfilePage.page(),
   );
 
@@ -51,21 +51,17 @@ GoRouter buildRouter() {
     branches: [
       StatefulShellBranch(
         navigatorKey: _stopwatchNavigatorKey,
-        routes: [
-          stopwatch,
-        ],
+        routes: [stopwatch],
       ),
       StatefulShellBranch(
         navigatorKey: _profileNavigatorKey,
-        routes: [
-          profile,
-        ],
+        routes: [profile],
       ),
     ],
   );
 
   return GoRouter(
-    initialLocation: AppRoutes.stopwatch.path,
+    initialLocation: Routes.stopwatch.path,
     navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: kDebugMode,
     refreshListenable: refreshStream,

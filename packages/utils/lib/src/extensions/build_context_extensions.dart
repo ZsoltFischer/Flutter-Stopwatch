@@ -1,3 +1,5 @@
+// ignore_for_file: prefer-match-file-name
+
 import 'package:flutter/widgets.dart';
 import 'package:utils/src/constants/breakpoints.dart';
 

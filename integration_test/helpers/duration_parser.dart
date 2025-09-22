@@ -10,6 +10,7 @@ Duration parseDuration(String text) {
   final minutes = int.parse(match.group(2)!);
   final seconds = int.parse(match.group(3)!);
   final milliseconds = int.parse(match.group(4)!);
+
   return Duration(
     hours: hours,
     minutes: minutes,

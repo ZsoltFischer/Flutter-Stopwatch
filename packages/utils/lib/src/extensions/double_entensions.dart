@@ -1,3 +1,5 @@
+// ignore_for_file: prefer-match-file-name
+
 import 'dart:math' as math;
 
 /// Extension on double to convert degrees to radians

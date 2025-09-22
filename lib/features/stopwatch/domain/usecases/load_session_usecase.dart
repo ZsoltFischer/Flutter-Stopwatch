@@ -1,4 +1,4 @@
-import 'package:stopwatch/exceptions/app_exceptions.dart';
+import 'package:stopwatch/exceptions/app_exception.dart';
 import 'package:stopwatch/features/stopwatch/domain/entities/stopwatch_session_entity.dart';
 import 'package:stopwatch/features/stopwatch/domain/repositories/stopwatch_repository.dart';
 import 'package:utils/utils.dart' show Result;
@@ -8,10 +8,8 @@ class LoadSessionUseCase {
 
   final StopwatchRepository _repository;
 
-  Future<Result<StopwatchSessionEntity, AppException>> call(
-    String id,
-  ) async {
+  Future<Result<StopwatchSessionEntity, AppException>> call(String id) async {
     //!TODO Implement proper error handling etc.
-    return _repository.loadSession(id);
+    return await _repository.loadSession(id);
   }
 }

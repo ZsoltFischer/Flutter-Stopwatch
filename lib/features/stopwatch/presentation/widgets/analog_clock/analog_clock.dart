@@ -1,11 +1,11 @@
 import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stopwatch/features/stopwatch/domain/bloc/stopwatch_bloc.dart';
 import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/clock_face.dart';
-import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/linear_seconds_hand.dart';
-import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/performant_clock_hand.dart';
+import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/clock_hand.dart';
 import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/secondary_clock_face.dart';
-import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/ticking_seconds_hand.dart';
 
 /// An analog clock widget that displays hours, minutes, and seconds hands.
 /// The clock is designed to fit in a square area responsively,
@@ -20,16 +20,17 @@ class AnalogClock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final stopwatchBloc = context.read<StopwatchBloc>();
     final clockComponents = <Widget>[
       const ClockFace(),
-      PerformantClockHand.hours(),
-      PerformantClockHand.minutes(),
-      const LinearSecondsHand(),
+      ClockHand.hours(elapsedTimeStream: stopwatchBloc.hourStream),
+      ClockHand.minutes(elapsedTimeStream: stopwatchBloc.minuteStream),
+      ClockHand.seconds(elapsedTimeStream: stopwatchBloc.msStream),
     ];
 
     final secondaryClockComponents = <Widget>[
       const SecondaryClockFace(),
-      const TickingSecondsHand(),
+      ClockHand.discreteSeconds(elapsedTimeStream: stopwatchBloc.secondsStream),
     ];
 
     return SliverPadding(
@@ -43,6 +44,7 @@ class AnalogClock extends StatelessWidget {
                 constraints.maxWidth,
                 constraints.maxHeight,
               );
+
               return SizedBox(
                 width: size,
                 height: size,

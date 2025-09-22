@@ -1,10 +1,11 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:stopwatch/features/stopwatch/data/repositories/stopwatch_repository_impl.dart';
 import 'package:stopwatch/features/stopwatch/domain/services/stopwatch_service.dart';
 import 'package:stopwatch/features/stopwatch/domain/usecases/usecases.dart';
-import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.dart';
+import 'package:stopwatch/features/stopwatch/domain/bloc/stopwatch_bloc.dart';
 
 /// A provider widget that sets up the necessary
 /// dependencies for the stopwatch feature,
@@ -13,10 +14,7 @@ import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.da
 /// the part of the widget tree that requires access to these dependencies.
 class StopwatchProvider extends StatelessWidget {
   /// Creates a [StopwatchProvider] widget.
-  const StopwatchProvider({
-    required this.child,
-    super.key,
-  });
+  const StopwatchProvider({required this.child, super.key});
 
   final Widget child;
 
@@ -25,7 +23,8 @@ class StopwatchProvider extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider(
-          create: (context) => StopwatchService(),
+          create: (context) =>
+              StopwatchService(clock: Clock(), tickFrequencyHz: 30),
         ),
 
         RepositoryProvider<StopwatchRepositoryImpl>(
@@ -35,22 +34,26 @@ class StopwatchProvider extends StatelessWidget {
         ),
 
         BlocProvider<StopwatchBloc>(
-          create: (context) => StopwatchBloc(
-            stopwatchService: context.read<StopwatchService>(),
-            startStopwatchUsecase: StartStopwatchUsecase(
-              stopwatchRepository: context.read<StopwatchRepositoryImpl>(),
-            ),
-            pauseStopwatchUsecase: PauseStopwatchUsecase(
-              stopwatchRepository: context.read<StopwatchRepositoryImpl>(),
-            ),
-            stopStopwatchUsecase: StopStopwatchUsecase(
-              stopwatchRepository: context.read<StopwatchRepositoryImpl>(),
-            ),
-            recordLapUsecase: RecordLapUsecase(
-              stopwatchRepository: context.read<StopwatchRepositoryImpl>(),
-            ),
-          ),
-          lazy: false,
+          create: (context) {
+            final stopwatchRepository = context.read<StopwatchRepositoryImpl>();
+
+            return StopwatchBloc(
+              stopwatchService: context.read<StopwatchService>(),
+              startStopwatchUsecase: StartStopwatchUsecase(
+                stopwatchRepository: stopwatchRepository,
+              ),
+              pauseStopwatchUsecase: PauseStopwatchUsecase(
+                stopwatchRepository: stopwatchRepository,
+              ),
+              stopStopwatchUsecase: StopStopwatchUsecase(
+                stopwatchRepository: stopwatchRepository,
+              ),
+              recordLapUsecase: RecordLapUsecase(
+                stopwatchRepository: stopwatchRepository,
+              ),
+            );
+          },
+          // lazy: false,
         ),
       ],
       child: child,

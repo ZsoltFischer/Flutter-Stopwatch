@@ -1,4 +1,4 @@
-import 'package:stopwatch/exceptions/app_exceptions.dart';
+import 'package:stopwatch/exceptions/app_exception.dart';
 import 'package:stopwatch/features/stopwatch/domain/entities/stopwatch_session_entity.dart';
 import 'package:stopwatch/features/stopwatch/domain/repositories/stopwatch_repository.dart';
 import 'package:stopwatch/features/stopwatch/domain/services/stopwatch_service.dart';
@@ -15,9 +15,8 @@ import 'package:utils/utils.dart' show Result;
 /// delegating stopwatch operations to the service.
 class StopwatchRepositoryImpl implements StopwatchRepository {
   /// Creates a [StopwatchRepositoryImpl] with the given [StopwatchService].
-  StopwatchRepositoryImpl({
-    required StopwatchService stopwatchService,
-  }) : _stopwatchService = stopwatchService;
+  StopwatchRepositoryImpl({required StopwatchService stopwatchService})
+    : _stopwatchService = stopwatchService;
 
   final StopwatchService _stopwatchService;
 

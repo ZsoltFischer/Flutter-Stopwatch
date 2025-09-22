@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:stopwatch/app/presentation/widgets/default_sliver_appbar.dart';
 import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/analog_clock.dart';
+import 'package:stopwatch/features/stopwatch/presentation/widgets/digital_clock/digital_clock.dart';
 import 'package:stopwatch/features/stopwatch/presentation/widgets/widgets.dart';
 
 /// Page displaying the stopwatch with analog and digital clocks,
@@ -10,9 +11,8 @@ class StopwatchPage extends StatelessWidget {
   const StopwatchPage({super.key});
 
   /// Returns a [Page] for navigation purposes.
-  static Page<void> page() => const CupertinoPage(
-    child: StopwatchProvider(child: StopwatchPage()),
-  );
+  static Page<void> page() =>
+      const CupertinoPage(child: StopwatchProvider(child: StopwatchPage()));
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class StopwatchPage extends StatelessWidget {
         slivers: [
           DefaultSliverAppbar(title: 'Stopwatch'),
           AnalogClock(),
-          DigitalClockComparison(),
+          DigitalClock(),
           StopwatchControls(),
           LapList(),
         ],

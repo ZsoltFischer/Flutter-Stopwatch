@@ -1,6 +1,8 @@
+// ignore_for_file: prefer-single-widget-per-file
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.dart';
+import 'package:stopwatch/features/stopwatch/domain/bloc/stopwatch_bloc.dart';
 import 'package:utils/utils.dart';
 
 /// A widget that displays the stopwatch controls
@@ -23,18 +25,13 @@ class StopwatchControls extends StatelessWidget {
           previous.runtimeType != current.runtimeType,
       builder: (context, state) {
         final buttons = switch (state) {
-          StopwatchInitial() => [
-            const _StartButton(),
-          ],
+          StopwatchInitial() => [const _StartButton()],
           StopwatchRunning() => [
             const _StopButton(),
             const _PauseButton(),
             const _LapButton(),
           ],
-          StopwatchPaused() => [
-            const _ResumeButton(),
-            const _StopButton(),
-          ],
+          StopwatchPaused() => [const _ResumeButton(), const _StopButton()],
         };
 
         return SliverToBoxAdapter(

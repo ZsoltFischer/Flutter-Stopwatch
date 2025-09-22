@@ -10,6 +10,8 @@
 /// * because it prevents creating constant instances of [String]s.
 /// * All widgets that use it can not be declared as `const`.
 /// * Remove all usages of this extension before releasing the app!
+// ignore_for_file: prefer-match-file-name
+
 extension HardCodedStrings on String {
   /// Returns the hardcoded string itself.
   String get hardcoded => this;

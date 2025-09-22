@@ -1,13 +1,13 @@
 /// All the supported routes in the app.
 /// By using an enum, we route by name using this syntax:
 /// ```dart
-/// context.goNamed(AppRoute.stopwatch.path)
+/// context.goNamed(Routes.stopwatch.path)
 /// ```
-enum AppRoutes {
+enum Routes {
   stopwatch(path: '/'),
   profile(path: '/profile');
 
-  const AppRoutes({required this.path});
+  const Routes({required this.path});
 
   final String path;
 }

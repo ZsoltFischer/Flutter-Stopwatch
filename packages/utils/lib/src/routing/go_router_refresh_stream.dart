@@ -1,3 +1,5 @@
+// ignore_for_file: avoid-dynamic
+
 import 'dart:async';
 import 'package:async/async.dart';
 import 'package:flutter/foundation.dart';
@@ -10,9 +12,9 @@ class GoRouterRefreshStream extends ChangeNotifier {
     // Convert each incoming stream to Stream<void>
     final voidStreams = streams.map((s) => s.map((_) => null));
 
-    _subscription = StreamGroup.merge(voidStreams).listen(
-      (_) => notifyListeners(),
-    );
+    _subscription = StreamGroup.merge(
+      voidStreams,
+    ).listen((_) => notifyListeners());
   }
 
   late final StreamSubscription<void> _subscription;

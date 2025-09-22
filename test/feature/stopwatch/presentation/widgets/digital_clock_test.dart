@@ -1,68 +1,106 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.dart';
-import 'package:stopwatch/features/stopwatch/presentation/widgets/digital_clock/accurate_digital_clock.dart';
-import 'package:utils/utils.dart';
+// ignore_for_file: prefer-moving-to-variable
 
-import '../../../../helpers/fakes/fake_stopwatch_bloc.dart';
-import '../../../../helpers/helpers.dart';
+import 'dart:async';
+
+import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:stopwatch/features/stopwatch/domain/bloc/stopwatch_bloc.dart';
+import 'package:stopwatch/features/stopwatch/presentation/widgets/digital_clock/digital_clock.dart';
+
+import '../../../../mocks.dart';
 
 void main() {
   group('DigitalClock', () {
-    late FakeStopwatchBloc fakeBloc;
+    late MockStopwatchBloc mockStopwatchBloc;
+
+    setUpAll(() {
+      registerFallbackValue(const StopwatchInitial());
+      registerFallbackValue(StopwatchStart());
+    });
 
     setUp(() {
-      fakeBloc = FakeStopwatchBloc(const StopwatchInitial());
+      mockStopwatchBloc = MockStopwatchBloc();
     });
 
-    tearDown(() {
-      fakeBloc.dispose();
-    });
+    // Helper method to pump the widget with a mock bloc in a sliver-aware context
+    Future<void> pumpDigitalClockWidget({
+      required WidgetTester tester,
+      required MockStopwatchBloc bloc,
+      required StopwatchState initialState,
+      Stream<int>? msStream,
+    }) async {
+      when(() => bloc.msStream).thenAnswer((_) => msStream ?? Stream.value(0));
 
-    testWidgets('shows initial display', (tester) async {
-      await tester.pumpWithFakeStopwatchBloc(
+      // Use whenListen to properly mock the stream and state
+      whenListen(
+        bloc,
+        Stream.fromIterable([initialState]),
+        initialState: initialState,
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<StopwatchBloc>.value(
+            value: bloc,
+            child: const CustomScrollView(slivers: [DigitalClock()]),
+          ),
+        ),
+      );
+    }
+
+    testWidgets('should render with initial time 00:00:00.000', (tester) async {
+      // Arrange
+      await pumpDigitalClockWidget(
+        tester: tester,
+        bloc: mockStopwatchBloc,
         initialState: const StopwatchInitial(),
-        fakeBloc: fakeBloc,
-        child: const AccurateDigitalClock(),
+        msStream: Stream.value(0),
       );
-      expect(find.text(Duration.zero.toDigitalClock()), findsOneWidget);
+
+      // Assert
+      final digitalClockTextFinder = find.byKey(const ValueKey('DigitalClock'));
+      expect(digitalClockTextFinder, findsOneWidget);
+      final textWidget = tester.widget<Text>(digitalClockTextFinder);
+      expect(textWidget.data, equals('00:00:00.000'));
     });
 
-    testWidgets('updates display after 100ms when running', (tester) async {
-      await tester.pumpWithFakeStopwatchBloc(
-        initialState: StopwatchRunning(
-          elapsedTimeInMs: 100,
-          startTime: DateTime.now(),
-        ),
-        fakeBloc: fakeBloc,
-        child: const AccurateDigitalClock(),
-      );
-      expect(
-        find.text(const Duration(milliseconds: 100).toDigitalClock()),
-        findsOneWidget,
-      );
-    });
-
-    testWidgets('paused state displays correct elapsed time', (tester) async {
-      await tester.pumpWithFakeStopwatchBloc(
-        initialState: StopwatchRunning(
-          elapsedTimeInMs: 100,
-          startTime: DateTime.now(),
-        ),
-        fakeBloc: fakeBloc,
-        child: const AccurateDigitalClock(),
-      );
-      expect(
-        find.text(const Duration(milliseconds: 100).toDigitalClock()),
-        findsOneWidget,
+    testWidgets('should display correct time based on stream updates', (
+      tester,
+    ) async {
+      // Arrange
+      final msController = StreamController<int>();
+      await pumpDigitalClockWidget(
+        tester: tester,
+        bloc: mockStopwatchBloc,
+        initialState: const StopwatchInitial(),
+        msStream: msController.stream,
       );
 
-      // Pause the stopwatch
-      fakeBloc.emit(const StopwatchPaused(elapsedTimeInMs: 100));
+      // Act & Assert for 10 seconds
+      msController.add(10000);
       await tester.pumpAndSettle();
-      expect(
-        find.text(const Duration(milliseconds: 100).toDigitalClock()),
-        findsOneWidget,
-      );
+      expect(find.text('00:00:10.000'), findsOneWidget);
+
+      // Act & Assert for 1 minute
+      msController.add(60000);
+      await tester.pumpAndSettle();
+      expect(find.text('00:01:00.000'), findsOneWidget);
+
+      // Act & Assert for 1 hour
+      msController.add(3600000);
+      await tester.pumpAndSettle();
+      expect(find.text('01:00:00.000'), findsOneWidget);
+
+      // Act & Assert for an odd value
+      msController.add(3665123);
+      await tester.pumpAndSettle();
+      expect(find.text('01:01:05.123'), findsOneWidget);
+
+      // Clean up the stream controller.
+      addTearDown(msController.close);
     });
   });
 }

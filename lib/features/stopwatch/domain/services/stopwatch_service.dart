@@ -1,189 +1,95 @@
-// stopwatch_service.dart
-
 import 'dart:async';
-import 'dart:math';
+import 'dart:math' as math;
+import 'package:clock/clock.dart';
+import 'package:stopwatch/features/stopwatch/domain/entities/lap_entity.dart';
 
-import 'package:stopwatch/features/stopwatch/domain/entities/entities.dart';
-
-/// This class is a dedicated service for managing the stopwatch timer.
-/// It handles starting, pausing, stopping, and recording laps
-///
-/// The service emits updates via a stream, allowing subscribers to
-/// listen for changes in the stopwatch state.
-/// It also enforces a maximum duration limit to prevent the
-/// stopwatch from running indefinitely.
 class StopwatchService {
-  /// Creates a [StopwatchService] with an optional tick limit
-  /// (default is 99 hours).
-  StopwatchService({
-    double tickFrequencyHz = 60,
-    Duration tickLimit = const Duration(hours: 99),
-  }) {
+  StopwatchService({required Clock clock, required int tickFrequencyHz}) {
+    _clock = clock;
+    _stopwatch = _clock.stopwatch();
+
     /// Prevent division by zero and ensure a positive tick frequency.
-    _tickPeriodInMs = 1000 ~/ (max(double.minPositive, tickFrequencyHz.abs()));
-    _tickLimitInMs = tickLimit.inMilliseconds;
-    _durationController = _createController();
+    _tickPeriodInMs =
+        1000 ~/ (math.max(double.minPositive, tickFrequencyHz.abs()));
   }
 
-  /// ===============================================================
-  /// * Members
-  /// ===============================================================
+  late final Clock _clock;
+  late final Stopwatch _stopwatch;
+  late final int _tickPeriodInMs;
 
-  /// The maximum duration the stopwatch can run before stopping automatically.
-  /// This is useful for preventing the stopwatch from running indefinitely.
-  ///
-  /// The default limit is set to 99 hours.
-  late final int _tickLimitInMs;
+  final _msController = StreamController<int>.broadcast();
+  final _lapController = StreamController<List<LapEntity>>.broadcast();
 
-  /// The tick limit in milliseconds.
-  int get tickLimit => _tickLimitInMs;
-
-  /// Controller for broadcasting stopwatch state updates.
-  late StreamController<StopwatchStateEntity> _durationController;
-
-  /// Subscription to the periodic timer stream.
-  StreamSubscription<int>? _timerSubscription;
-
-  /// The timestamp of the last tick in milliseconds.
-  int? _lastTickInMs;
-
-  /// The total elapsed time in milliseconds.
-  int _elapsedTimeInMs = 0;
-
-  /// The elapsed time of the previous lap.
-  int _lastLapTimeInMs = 0;
-
-  /// The timestamp when the stopwatch was started in milliseconds.
-  // int? _startTimeInMs;
-
-  /// Stream that emits the current state of the stopwatch.
-  Stream<StopwatchStateEntity> get durationStream => _durationController.stream;
+  Timer? _timer;
+  int _lastLapTimeMilliseconds = 0;
 
   /// List of recorded laps.
   final List<LapEntity> _laps = [];
 
   /// Unmodifiable list of the recorded laps.
-  List<LapEntity> get laps => List.unmodifiable(_laps);
+  List<LapEntity> get laps => List<LapEntity>.unmodifiable(_laps);
 
-  /// Frequency of timer ticks in Hz.
-  late final int _tickPeriodInMs;
+  /// Exposes a stream of elapsed milliseconds.
+  Stream<int> get msStream => _msController.stream;
 
-  /// Exposes the tick frequency in Hz for testing and inspection.
-  int get tickFrequencyHz => _tickPeriodInMs;
-
-  /// Factory for a reusable StreamController
-  StreamController<StopwatchStateEntity> _createController() {
-    return StreamController<StopwatchStateEntity>.broadcast();
-  }
-
-  /// ===============================================================
-  /// * Public Methods
-  /// ===============================================================
+  /// Exposes a stream of laps to listen for new additions.
+  Stream<List<LapEntity>> get lapStream => _lapController.stream;
 
   /// Starts or resumes the stopwatch.
   void start() {
-    // 1. Avoid multiple subscriptions
-    if (_timerSubscription != null) return;
-
-    // 2. Recreate the controller if it has been closed
-    if (_durationController.isClosed) {
-      _durationController = _createController();
+    if (!_stopwatch.isRunning) {
+      _stopwatch.start();
+      _startTimer();
     }
-
-    // 3. Start the periodic timer to update the stopwatch
-    _lastTickInMs = DateTime.now().millisecondsSinceEpoch;
-
-    // _lastTickInMs = _startTimeInMs;
-    _timerSubscription = Stream.periodic(
-      Duration(milliseconds: _tickPeriodInMs),
-      (ticks) => ticks,
-    ).listen(_tick);
   }
 
   /// Pauses the stopwatch.
   void pause() {
-    _timerSubscription?.cancel();
-    _timerSubscription = null;
-    _lastTickInMs = null;
-  }
-
-  /// Resets the stopwatch to 0.
-  void stop() {
-    // 1. Pause the stopwatch if it's running
-    pause();
-
-    // 2. Reset elapsed time and laps
-    _laps.clear();
-    _elapsedTimeInMs = 0;
-    _lastLapTimeInMs = 0;
-
-    // 3. Emit the reset state
-    _emit();
-  }
-
-  /// Records a lap at the current elapsed time.
-  void recordLap() {
-    /// Calculate the duration of the current lap.
-    final lapDuration = _elapsedTimeInMs - _lastLapTimeInMs;
-
-    /// Adds a new lap entry to the list of recorded laps.
-    _laps.add(
-      LapEntity(
-        index: _laps.length,
-        lapTime: lapDuration,
-      ),
-    );
-
-    /// Update the last lap time for the next calculation.
-    _lastLapTimeInMs = _elapsedTimeInMs;
-  }
-
-  /// ==============================================================
-  /// * Private Methods
-  /// ===============================================================
-
-  /// Handles each tick of the stopwatch.
-  void _tick(int _) {
-    final nowInMs = DateTime.now().millisecondsSinceEpoch;
-
-    // Update elapsed time
-    if (_lastTickInMs != null) {
-      _elapsedTimeInMs += nowInMs - _lastTickInMs!;
+    if (_stopwatch.isRunning) {
+      _stopwatch.stop();
+      _timer?.cancel();
+      _msController.add(_stopwatch.elapsedMilliseconds);
     }
-    _lastTickInMs = nowInMs;
+  }
 
-    // Check if the tick limit has been reached
-    if (_elapsedTimeInMs >= _tickLimitInMs) {
-      // Cap the elapsed time at the tick limit
-      _elapsedTimeInMs = _tickLimitInMs;
-      _emit();
-      stop();
+  /// Records a new lap.
+  void recordLap() {
+    if (!_stopwatch.isRunning) {
       return;
     }
 
-    // Emit the updated stopwatch state
-    _emit();
+    final totalTime = _stopwatch.elapsedMilliseconds;
+    final lapTime = totalTime - _lastLapTimeMilliseconds;
+
+    final newLap = LapEntity(index: _laps.length + 1, lapTime: lapTime);
+
+    _laps.add(newLap);
+    _lastLapTimeMilliseconds = totalTime;
+    _lapController.add(List<LapEntity>.unmodifiable(_laps));
   }
 
-  /// Emits the current stopwatch state to the stream.
-  void _emit() {
-    /// Creates a new [StopwatchStateEntity] and adds it to the stream.
-    _durationController.add(
-      StopwatchStateEntity(
-        elapsedTimeInMs: _elapsedTimeInMs,
-        laps: laps,
-        isComplete: _elapsedTimeInMs >= tickLimit,
-      ),
-    );
+  /// Stops and resets the stopwatch.
+  void stop() {
+    _stopwatch
+      ..stop()
+      ..reset();
+    _timer?.cancel();
+    _msController.add(0);
+    _laps.clear();
+    _lastLapTimeMilliseconds = 0;
+    _lapController.add(List.unmodifiable(_laps));
   }
 
-  /// ==============================================================
-  /// * Cleanup
-  /// ===============================================================
+  void _startTimer() {
+    _timer = Timer.periodic(Duration(milliseconds: _tickPeriodInMs), (_) {
+      _msController.add(_stopwatch.elapsedMilliseconds);
+    });
+  }
 
-  // Disposes of the StreamController and subscription.
+  /// Disposes of all streams and the timer.
   Future<void> dispose() async {
-    await _timerSubscription?.cancel();
-    await _durationController.close();
+    _timer?.cancel();
+    await _msController.close();
+    await _lapController.close();
   }
 }

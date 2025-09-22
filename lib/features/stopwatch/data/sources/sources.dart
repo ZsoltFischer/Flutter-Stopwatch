@@ -1,1 +1,1 @@
-export 'lap_local_datasoruce.dart';
+export 'lap_local_datasource.dart';

@@ -9,6 +9,8 @@
 /// Duration.zero.toDigitalClock() // "00:00:00.000"
 /// Duration(milliseconds: 1).toDigitalClock() // "00:00:00.001"
 /// ```
+// ignore_for_file: prefer-match-file-name
+
 extension DurationDigitalFormat on Duration {
   /// Fast digital clock style formatter: "hh:mm:ss.mmm" for [Duration].
   String toDigitalClock() {

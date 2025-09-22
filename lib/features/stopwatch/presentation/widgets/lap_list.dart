@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stopwatch/features/stopwatch/presentation/bloc/stopwatch_bloc.dart';
+import 'package:stopwatch/features/stopwatch/domain/bloc/stopwatch_bloc.dart';
+import 'package:stopwatch/features/stopwatch/presentation/models/lap_viewmodel.dart';
 import 'package:stopwatch/features/stopwatch/presentation/widgets/lap_list_tile.dart';
 
 /// A widget that displays a list of recorded laps in the stopwatch application.
@@ -16,6 +17,7 @@ class LapList extends StatelessWidget {
           !listEquals(previous.laps, current.laps),
       builder: (context, state) {
         final lapCount = state.laps.length;
+
         return SliverPadding(
           padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
           sliver: SliverList.separated(
@@ -23,9 +25,10 @@ class LapList extends StatelessWidget {
             itemCount: lapCount,
             itemBuilder: (context, index) {
               final lap = state.laps[lapCount - 1 - index]; // Reverse order
+
               return LapListTile(
                 key: ValueKey(lap.toString()),
-                lap: lap,
+                lap: LapViewModel.fromEntity(lap),
               );
             },
           ),

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer-match-file-name
+
 import 'package:flutter_test/flutter_test.dart';
 
 extension Wait on WidgetTester {

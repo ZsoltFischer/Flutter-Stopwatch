@@ -33,6 +33,7 @@ class ErrorHandler {
         error: error,
         stackTrace: stack,
       );
+
       return true;
     };
 
@@ -40,6 +41,7 @@ class ErrorHandler {
       if (errorWidgetBuilder != null) {
         return errorWidgetBuilder(details);
       }
+
       return Center(
         child: Text(
           kDebugMode

@@ -7,7 +7,7 @@ import 'helpers/duration_parser.dart';
 /// Robot for integration testing the Stopwatch app.
 /// Encapsulates all UI interactions and verifications for complex workflows.
 class AppRobot {
-  AppRobot(this.tester);
+  const AppRobot(this.tester);
   final WidgetTester tester;
 
   /// ==========================================

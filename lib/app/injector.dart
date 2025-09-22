@@ -6,5 +6,5 @@ final GetIt getIt = GetIt.instance;
 
 /// Register dependencies in the service locator
 Future<void> configureDependencies() async {
-  getIt.registerSingleton<CustomLogger>(CustomLogger());
+  await getIt.registerSingleton<CustomLogger>(CustomLogger());
 }
