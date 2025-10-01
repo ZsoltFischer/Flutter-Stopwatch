@@ -1,0 +1,29 @@
+@startuml
+title StopwatchBloc (Refactored) - State Diagram
+
+[*] --> StopwatchInitial : app start / reset
+
+StopwatchInitial --> StopwatchRunning : StopwatchStart
+StopwatchRunning --> StopwatchPaused : StopwatchPause
+StopwatchRunning --> StopwatchInitial : StopwatchStop
+StopwatchPaused --> StopwatchRunning : StopwatchStart
+StopwatchPaused --> StopwatchInitial : StopwatchStop
+
+StopwatchRunning --> StopwatchRunning : StopwatchLapsUpdated (StopwatchRecordLap use case)
+StopwatchPaused --> StopwatchPaused : StopwatchLapsUpdated (can't trigger StopwatchRecordLap but reacting to late updates is allowed)
+
+note top of StopwatchRunning
+  - State contains laps: List<LapEntity>
+  - StopwatchService runs and emits msStream & lapStream
+  - Lap updates handled via StopwatchLapsUpdated event
+  - StopwatchRecordLap triggers usecase only; state update comes from lapStream
+end note
+
+note top of StopwatchPaused
+  - State contains laps: List<LapEntity>
+  - Stopwatch paused; msStream continues in service, 
+    UI doesn't update elapsed time
+  - Lap updates still handled via StopwatchLapsUpdated event
+end note
+
+@enduml

@@ -1,0 +1,60 @@
+@startuml
+title StopwatchService Refactor - Responsibilities (ADR Visual)
+
+package "Old StopwatchService" {
+    class StopwatchService_Old {
+        +start()
+        +pause()
+        +stop()
+        +recordLap()
+        +dispose()
+        - _tick()
+        - _emit()
+        +durationStream : Stream<StopwatchStateEntity>
+        - _laps : List<LapEntity>
+        - _elapsedTimeInMs
+        - _lastTickInMs
+    }
+    StopwatchService_Old --> StopwatchStateEntity : emits full state
+    StopwatchService_Old --> LapEntity : records laps
+    StopwatchService_Old --> DateTime : uses now()
+}
+
+package "Models" {
+    class LapEntity {
+        +index: int
+        +lapTime: int
+    }
+    
+    class StopwatchStateEntity {
+        +elapsedTimeInMs: int
+        +laps: List<LapEntity>
+        +isComplete: bool
+    }
+}
+
+package "New StopwatchService" {
+    class StopwatchService_New {
+        +start()
+        +pause()
+        +stop()
+        +recordLap()
+        +dispose()
+        +msStream : Stream<int>
+        +lapStream : Stream<List<LapEntity>>
+        - _stopwatch
+        - _timer
+    }
+    StopwatchService_New --> Stopwatch : uses injected stopwatch
+    StopwatchService_New --> LapEntity : records laps
+    note right of StopwatchService_New
+      Timer.periodic emits elapsed 
+      milliseconds into msStream
+      
+      Lap updates emitted via lapStream
+    end note
+}
+
+StopwatchService_Old -[#red]-> StopwatchService_New : refactor
+
+@enduml

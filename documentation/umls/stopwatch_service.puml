@@ -1,0 +1,50 @@
+@startuml
+' High-level diagram for StopwatchService (Clock-based version)
+
+class StopwatchService {
+    +start(): void
+    +pause(): void
+    +stop(): void
+    +recordLap(): void
+    +dispose(): Future<void>
+    +msStream : Stream<int>
+    +lapStream : Stream<List<LapEntity>>
+    -laps : List<LapEntity>
+}
+
+class LapEntity {
+    +index: int
+    +lapTime: int
+}
+class Stopwatch {
+  + start(): void
+  + stop(): void
+  + reset(): void
+  + get isRunning(): bool
+  + get elapsedMilliseconds(): int
+}
+class Timer{
+  {static} + periodic(duration: Duration, callback: Function): Timer
+}
+
+StopwatchService "1" --> "1" Stopwatch : uses
+StopwatchService "1" --> "1" Timer : manages
+StopwatchService "1" --> "*" LapEntity : records
+
+' Note for clarity on exposed streams
+note right of StopwatchService::msStream
+  Stream<int>
+  (elapsed milliseconds)
+end note
+
+note right of StopwatchService::lapStream
+  Stream<List<LapEntity>>
+  (list of recorded laps)
+end note
+
+' Note for clarity on Timer's purpose
+note top of Timer
+  Used to periodically update
+  the elapsed time stream.
+end note
+@enduml

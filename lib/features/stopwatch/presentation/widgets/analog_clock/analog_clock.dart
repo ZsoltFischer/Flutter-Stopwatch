@@ -5,7 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stopwatch/features/stopwatch/domain/bloc/stopwatch_bloc.dart';
 import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/clock_face.dart';
 import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/clock_hand.dart';
+import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/clock_hand_painter.dart';
 import 'package:stopwatch/features/stopwatch/presentation/widgets/analog_clock/secondary_clock_face.dart';
+import 'package:stopwatch/features/stopwatch/presentation/widgets/ticker/animated_clock.dart';
+import 'package:stopwatch/features/stopwatch/presentation/widgets/ticker/animated_clock_hand.dart';
 
 /// An analog clock widget that displays hours, minutes, and seconds hands.
 /// The clock is designed to fit in a square area responsively,
@@ -26,11 +29,32 @@ class AnalogClock extends StatelessWidget {
       ClockHand.hours(elapsedTimeStream: stopwatchBloc.hourStream),
       ClockHand.minutes(elapsedTimeStream: stopwatchBloc.minuteStream),
       ClockHand.seconds(elapsedTimeStream: stopwatchBloc.msStream),
+      AnimatedClock(
+        child: (elapsedMs) => CustomPaint(
+          painter: ClockHandPainter(
+            elapsedMs: elapsedMs,
+            fullCycleInUnits: Duration.millisecondsPerMinute,
+            lengthFactor: 0.6,
+            painter: Paint()
+              ..color = const Color.fromARGB(255, 0, 255, 0)
+              ..strokeWidth = 2
+              ..strokeCap = StrokeCap.round,
+          ),
+        ),
+      ),
     ];
 
     final secondaryClockComponents = <Widget>[
       const SecondaryClockFace(),
-      ClockHand.discreteSeconds(elapsedTimeStream: stopwatchBloc.secondsStream),
+      AnimatedClockHand(
+        elapsedMsStream: stopwatchBloc.secondsStream,
+        fullCycleInUnits: Duration.secondsPerMinute,
+        lengthFactor: 0.8,
+        painter: Paint()
+          ..color = const Color(0xFFFF0000)
+          ..strokeWidth = 2
+          ..strokeCap = StrokeCap.round,
+      ),
     ];
 
     return SliverPadding(

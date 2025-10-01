@@ -28,7 +28,7 @@ class ClockHand extends StatelessWidget {
     return ClockHand(
       key: key,
       elapsedTimeStream: elapsedTimeStream,
-      fullCycleInUnits: 60 * 1000,
+      fullCycleInUnits: Duration.millisecondsPerMinute,
       lengthFactor: 0.9,
       painter: Paint()
         ..color = const Color(0xFFFF0000)
@@ -47,7 +47,7 @@ class ClockHand extends StatelessWidget {
     return ClockHand(
       key: key,
       elapsedTimeStream: elapsedTimeStream,
-      fullCycleInUnits: 60,
+      fullCycleInUnits: Duration.secondsPerMinute,
       lengthFactor: 0.9,
       painter: Paint()
         ..color = const Color(0xFFFF0000)
@@ -64,7 +64,7 @@ class ClockHand extends StatelessWidget {
     return ClockHand(
       key: key,
       elapsedTimeStream: elapsedTimeStream,
-      fullCycleInUnits: 60,
+      fullCycleInUnits: Duration.minutesPerHour,
       lengthFactor: 0.9,
       painter: Paint()
         ..color = const Color(0xFF000000)
@@ -81,7 +81,7 @@ class ClockHand extends StatelessWidget {
     return ClockHand(
       key: key,
       elapsedTimeStream: elapsedTimeStream,
-      fullCycleInUnits: 12,
+      fullCycleInUnits: Duration.hoursPerDay ~/ 2,
       lengthFactor: 0.6,
       painter: Paint()
         ..color = const Color.fromARGB(255, 21, 0, 255)

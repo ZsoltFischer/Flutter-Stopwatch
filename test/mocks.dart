@@ -9,6 +9,8 @@ import 'package:stopwatch/features/stopwatch/domain/repositories/stopwatch_repos
 import 'package:stopwatch/features/stopwatch/domain/services/stopwatch_service.dart';
 import 'package:stopwatch/features/stopwatch/domain/usecases/usecases.dart';
 
+import 'feature/stopwatch/domain/services/fake_stopwatch.dart';
+
 class MockStopwatchRepository extends Mock implements StopwatchRepository {}
 
 class MockStopwatchService extends Mock implements StopwatchService {}
@@ -25,7 +27,11 @@ class MockStreamSubscription<T> extends Mock implements StreamSubscription<T> {}
 
 class MockStopwatchBloc extends Mock implements StopwatchBloc {}
 
-class MockClock extends Mock implements Clock {
+class MockStopwatch extends Mock implements Stopwatch {}
+
+class MockClock extends Clock {
+  int _elapsedMs = 0;
   @override
-  Stopwatch stopwatch() => Stopwatch();
+  Stopwatch stopwatch() => FakeStopwatch();
+  void advance(int ms) => _elapsedMs += ms;
 }

@@ -23,8 +23,10 @@ class StopwatchProvider extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider(
+          lazy: false,
           create: (context) =>
               StopwatchService(clock: Clock(), tickFrequencyHz: 30),
+          dispose: (context, service) => service.dispose(),
         ),
 
         RepositoryProvider<StopwatchRepositoryImpl>(
@@ -53,7 +55,7 @@ class StopwatchProvider extends StatelessWidget {
               ),
             );
           },
-          // lazy: false,
+          lazy: false,
         ),
       ],
       child: child,
