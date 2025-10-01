@@ -102,6 +102,8 @@ class StopwatchBloc extends Bloc<StopwatchEvent, StopwatchState> {
     add(StopwatchRecordLap());
   }
 
+  int get currentMs => _stopwatchService.currentMs;
+
   /// Exposes a stream of elapsed milliseconds.
   Stream<int> get msStream => _stopwatchService.msStream;
 

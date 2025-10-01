@@ -1,9 +1,14 @@
+// ignore_for_file: no-empty-block
+
 import 'dart:async';
+
+import 'package:clock/clock.dart';
 
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stopwatch/features/stopwatch/domain/entities/lap_entity.dart';
 import 'package:stopwatch/features/stopwatch/domain/services/stopwatch_service.dart';
+
 import '../../../../mocks.dart';
 
 void main() {
@@ -12,11 +17,13 @@ void main() {
   late StreamSubscription<List<LapEntity>> lapSubscription;
   late List<int> msUpdates;
   late List<List<LapEntity>> lapUpdates;
+  late MockClock clock;
 
   setUp(() {
+    clock = MockClock();
     stopwatchService = StopwatchService(
-      clock: MockClock(),
-      tickFrequencyHz: 30,
+      clock: clock,
+      tickFrequencyHz: 30, // tick period ~33ms
     );
     msUpdates = [];
     lapUpdates = [];
@@ -58,25 +65,27 @@ void main() {
     test(
       'should not create multiple subscriptions if called multiple times',
       () {
-        fakeAsync((async) {
+        fakeAsync((async) async {
+          // Use a real Stopwatch instead of Mock
+          stopwatchService = StopwatchService(
+            clock: Clock(),
+            tickFrequencyHz: 30, // tick period ~33ms
+          );
+
+          // First start
           stopwatchService.start();
           async.flushMicrotasks();
-          stopwatchService.start(); // Second call to start
 
-          // The tick period is ~33ms for 30Hz.
-          // After 20ms, no ticks are expected.
+          // Second start should not create a new subscription
+          stopwatchService.start();
+
+          // After 20ms (< tick period), no ticks yet
           async.elapse(const Duration(milliseconds: 20));
-
-          // This is a more precise assertion.
           expect(msUpdates.length, 0);
 
-          // Now, elapse enough time for one tick from a single timer.
-          async.elapse(
-            const Duration(milliseconds: 15),
-          ); // 20 + 15 = 35ms > 33ms
-
-          // Expect exactly one update from the single timer.
-          expect(msUpdates.length, 1);
+          // Now elapse enough for one tick (~33ms total)
+          async.elapse(const Duration(milliseconds: 15));
+          expect(msUpdates.length, 1); // only one tick
         });
       },
     );
@@ -175,7 +184,7 @@ void main() {
 
           // Verify the details of the first lap
           expect(laps.first.index, 1);
-          expect(laps.first.lapTime, closeTo(50, 5));
+          expect(laps.first.lapTime, 50);
         });
       },
     );
@@ -186,21 +195,54 @@ void main() {
         async.elapse(const Duration(milliseconds: 20));
         stopwatchService.recordLap();
 
-        // Check if the first lap was added correctly
+        // First lap should be emitted
         // ignore: prefer-moving-to-variable
         expect(lapUpdates.last.length, 1);
-        expect(lapUpdates.last.first.lapTime, closeTo(20, 5));
+        expect(lapUpdates.last.first.lapTime, 20);
 
         async.elapse(const Duration(milliseconds: 30));
         stopwatchService.recordLap();
 
-        // Check the second lap
+        // Second lap should be emitted
         // ignore: prefer-moving-to-variable
         expect(lapUpdates.last.length, 2);
-        expect(lapUpdates.last.last.lapTime, closeTo(30, 5));
+        expect(lapUpdates.last.last.lapTime, 30);
+      });
+    });
+  });
 
-        // Check the total elapsed time on the stopwatch service
-        expect(stopwatchService.laps.length, 2);
+  group('Edge cases', () {
+    test('Record Lap Immediately After Start: Should record a lap of 0ms', () {
+      fakeAsync((async) {
+        // ARRANGE
+        stopwatchService.start(); // fakeStopwatch.elapsedMilliseconds is 0
+
+        // ACT
+        stopwatchService.recordLap();
+
+        async.flushMicrotasks();
+
+        // ASSERT
+        expect(lapUpdates.last.length, 1);
+        expect(lapUpdates.last.last.lapTime, 0);
+      });
+    });
+
+    test('Recording laps with 0 elapsed time works', () {
+      fakeAsync((async) {
+        stopwatchService.start();
+        clock.advance(200);
+        async.elapse(const Duration(milliseconds: 0));
+
+        // ACT
+        stopwatchService.recordLap();
+        stopwatchService.recordLap();
+
+        async.flushMicrotasks();
+
+        // ASSERT
+        expect(lapUpdates.last.length, 2);
+        expect(lapUpdates.last.last.lapTime, 0);
       });
     });
   });

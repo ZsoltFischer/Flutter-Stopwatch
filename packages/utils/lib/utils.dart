@@ -7,3 +7,4 @@ export 'src/extensions/extensions.dart';
 export 'src/infrastructure/infrastructure.dart';
 export 'src/logging/logging.dart';
 export 'src/routing/go_router_refresh_stream.dart';
+export 'src/math/math.dart';

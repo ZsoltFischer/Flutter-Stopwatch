@@ -1,33 +1,51 @@
 import 'dart:async';
-import 'dart:math' as math;
 import 'package:clock/clock.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:stopwatch/features/stopwatch/domain/entities/lap_entity.dart';
 
+/// Service that manages the stopwatch functionality, including starting,
+/// pausing, stopping, and recording laps. It emits streams for elapsed time
+/// in milliseconds and a list of recorded laps.
+///
+/// The stopwatch uses a [Stopwatch] instance for time tracking and a
+/// periodic [Timer] to emit elapsed time updates at a configurable frequency.
 class StopwatchService {
+  /// Creates a [StopwatchService] with the given [stopwatch] and
+  /// [tickFrequencyHz]. The [tickFrequencyHz] determines how often the
+  /// elapsed time is emitted, constrained between 15 and 60 Hz.
+
   StopwatchService({required Clock clock, required int tickFrequencyHz}) {
     _clock = clock;
     _stopwatch = _clock.stopwatch();
-
-    /// Prevent division by zero and ensure a positive tick frequency.
-    _tickPeriodInMs =
-        1000 ~/ (math.max(double.minPositive, tickFrequencyHz.abs()));
+    // Constrain tick frequency between 15 and 60 Hz.
+    _tickPeriodInMs = 1000 ~/ tickFrequencyHz.clamp(15, 60);
   }
 
+  /// The Clock instance of the service
   late final Clock _clock;
+
+  /// The underlying [Stopwatch] instance used for time tracking.
   late final Stopwatch _stopwatch;
+
+  /// The tick period in milliseconds, derived from the tick frequency.
   late final int _tickPeriodInMs;
 
+  /// Stream controllers for emitting elapsed milliseconds and lap updates.
   final _msController = StreamController<int>.broadcast();
+
+  /// Stream controller for emitting lap updates.
   final _lapController = StreamController<List<LapEntity>>.broadcast();
 
+  /// Timer for emitting elapsed time updates.
   Timer? _timer;
+
+  /// The last recorded lap time in milliseconds.
   int _lastLapTimeMilliseconds = 0;
 
   /// List of recorded laps.
   final List<LapEntity> _laps = [];
 
-  /// Unmodifiable list of the recorded laps.
-  List<LapEntity> get laps => List<LapEntity>.unmodifiable(_laps);
+  int get currentMs => _stopwatch.elapsedMilliseconds;
 
   /// Exposes a stream of elapsed milliseconds.
   Stream<int> get msStream => _msController.stream;
@@ -81,9 +99,19 @@ class StopwatchService {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(milliseconds: _tickPeriodInMs), (_) {
-      _msController.add(_stopwatch.elapsedMilliseconds);
-    });
+    _timer = Timer.periodic(
+      Duration(milliseconds: _tickPeriodInMs),
+      (_) => _emitElapsed(),
+    );
+  }
+
+  void _emitElapsed() {
+    _msController.add(_stopwatch.elapsedMilliseconds);
+  }
+
+  @visibleForTesting
+  void emitNow() {
+    _emitElapsed();
   }
 
   /// Disposes of all streams and the timer.

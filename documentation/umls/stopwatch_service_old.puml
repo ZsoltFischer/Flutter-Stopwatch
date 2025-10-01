@@ -1,0 +1,43 @@
+@startuml
+' High-level class diagram for StopwatchService with periodic timer
+
+class StopwatchService {
+    +start()
+    +pause()
+    +stop()
+    +recordLap()
+    +dispose()
+    +stream : Stream<StopwatchStateEntity>
+    +laps : List<LapEntity>
+    -_tickPeriodInMs: int
+    -_timerSubscription: StreamSubscription<int>?
+}
+
+class LapEntity {
+    +index: int
+    +lapTime: int
+}
+
+class StopwatchStateEntity {
+    +elapsedTimeInMs: int
+    +laps: List<LapEntity>
+    +isComplete: bool
+}
+
+StopwatchService "1" --> "*" LapEntity : records
+StopwatchService "1" --> "1" StopwatchStateEntity : emits state
+
+' Periodic timer represented as an associated concept
+class StreamPeriodicTimer {
+    +listen(callback: Function)
+}
+
+StopwatchService "1" --> "1" StreamPeriodicTimer : uses for ticks
+
+note right of StreamPeriodicTimer
+  Periodically emits tick events every _tickPeriodInMs milliseconds.
+  Each tick triggers the _tick() method in StopwatchService,
+  which updates elapsed time and emits a new StopwatchStateEntity.
+end note
+
+@enduml

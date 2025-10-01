@@ -16,10 +16,10 @@ void main() {
   group('DigitalClock', () {
     late MockStopwatchBloc mockStopwatchBloc;
 
-    setUpAll(() {
-      registerFallbackValue(const StopwatchInitial());
-      registerFallbackValue(StopwatchStart());
-    });
+    // setUpAll(() {
+    //   registerFallbackValue(const StopwatchInitial());
+    //   registerFallbackValue(StopwatchStart());
+    // });
 
     setUp(() {
       mockStopwatchBloc = MockStopwatchBloc();

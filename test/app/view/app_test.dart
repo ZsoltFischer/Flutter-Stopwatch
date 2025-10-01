@@ -10,7 +10,7 @@ void main() {
   group('App Start', () {
     testWidgets('renders StopwatchPage', (tester) async {
       await tester.pumpWidget(const StopwatchApp());
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
 
       expect(find.byType(CupertinoApp), findsOneWidget);
       expect(find.byType(StopwatchPage), findsOneWidget);
