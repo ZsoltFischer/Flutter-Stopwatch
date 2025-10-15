@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   async: ^2.13.0
-  bloc: ^9.0.1
+  bloc: ^9.1.0
   clock: ^1.1.2
   cupertino_icons: ^1.0.8
   equatable: ^2.0.7
